@@ -1,0 +1,15 @@
+# Handle all text files automatically and normalize them to LF in the repository
+* text=auto
+
+# Explicitly ensure configuration, code, and lock files use LF line endings
+.env* text eol=lf
+*.toml text eol=lf
+*.version text eol=lf
+*.md text eol=lf
+uv.lock text eol=lf
+*.sh text eol=lf
+
+# Python and YAML files (common in your project)
+*.py text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
