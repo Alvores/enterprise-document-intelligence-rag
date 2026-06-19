@@ -1,0 +1,5 @@
+### 1. Basic Application Health Check
+GET http://localhost:8000/health
+
+### 2. Database Readiness Check
+GET http://localhost:8000/health/db
