@@ -18,15 +18,12 @@ A production-ready Retrieval-Augmented Generation (RAG) platform built with Fast
 PDF → PyMuPDF → Chunks → Embeddings → pgvector
 Query → Embedding → Hybrid Search → LLM → Answer
 
-## Current System State (Phase 1: Foundation)
-- ✅ Infrastructure: FastAPI, PostgreSQL, pgvector
-- ✅ Health endpoints: `/health`, `/health/db`
-- ✅ Structured JSON logging
-- ⏳ RAG ingestion: PDF upload + embedding (Week 2)
-- ⏳ RAG retrieval: Query + answer (Week 3)
-- ⏳ Hybrid search: BM25 + vector (Week 4)
-- ⏳ Golden dataset testing (Week 5)
-- ⏳ GCP Cloud Run deployment (Phase 3)
+## Status Tracker
+- ✅ **Phase 1 (Foundation):** FastAPI, PostgreSQL, pgvector, Logging, Health endpoints
+- ✅ **Phase 2 (Ingestion):** PDF upload, PyMuPDF parsing, LlamaIndex pipeline, pgvector persistence
+- ⏳ **Phase 3 (Retrieval):** Vector query, hybrid search (BM25), LLM synthesis
+- ⏳ **Phase 4 (Production):** Golden dataset testing, Dockerfile, GCP Cloud Run
+- ⏳ **Phase 5 (Frontend):** React SPA UI
 
 ## See Also
 - [Architecture Decision Records](./decisions.md)

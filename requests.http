@@ -1,5 +1,16 @@
-### 1. Basic Application Health Check
+### Basic Application Health Check
 GET http://localhost:8000/health
 
-### 2. Database Readiness Check
+### Database Readiness Check
 GET http://localhost:8000/health/db
+
+### Upload the Attention Paper
+POST http://localhost:8000/documents/upload
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="attention_is_all_you_need.pdf"
+Content-Type: application/pdf
+
+< ./data/attention_is_all_you_need.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

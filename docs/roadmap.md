@@ -10,12 +10,12 @@
 - [x] Git workflow (feature branches → PR → merge)
 
 ## Phase 2: Document Ingestion (Week 2)
-- [ ] Ollama installation + qwen3:4b
-- [ ] PyMuPDF PDF text extraction
-- [ ] LlamaIndex IngestionPipeline (chunking + embeddings)
-- [ ] pgvector storage
-- [ ] POST /documents/upload endpoint
-- [ ] Error handling + logging
+- [X] Ollama installation + qwen3:4b
+- [X] PyMuPDF PDF text extraction
+- [X] LlamaIndex IngestionPipeline (chunking + embeddings)
+- [X] pgvector storage
+- [X] POST /documents/upload endpoint
+- [X] Error handling + logging
 
 ## Phase 3: Retrieval (Week 3-4)
 - [ ] Query embedding generation
@@ -28,6 +28,7 @@
 - [ ] Dockerfile + docker-compose
 - [ ] GCP Cloud Run deployment
 - [ ] Monitoring + health checks
+- [ ] Implement Least Privilege Principal (DB User isolation / IAM Auth)
 
 ## Phase 5: Frontend (Week 7)
 - [ ] React SPA
