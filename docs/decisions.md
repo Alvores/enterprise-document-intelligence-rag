@@ -37,3 +37,17 @@
 * **Context:** The local machine's RTX 5070 Ti (Blackwell sm_120 architecture) is not yet supported by stable PyTorch CUDA wheels, causing kernel execution errors.
 * **Decision:** Fall back to CPU-only execution for `sentence-transformers` rather than debugging nightly PyTorch builds.
 * **Consequences:** Embedding generation is slightly slower, but completely unblocks Project 1 development. The GPU is reserved for running Ollama LLMs, where VRAM acceleration is actually mission-critical.
+
+## ADR-006: AI Boundary Mocking for Unit Tests
+* **Date:** 2026-06-21
+* **Status:** Accepted
+* **Context:** Adding `pytest` coverage for the `/documents/upload` API endpoint.
+* **Decision:** Use `unittest.mock` to intercept and mock the `IngestionService` during API route testing.
+* **Consequences:** Prevents `pytest` from invoking CPU-heavy embedding models or establishing database connections during standard CI/CD runs. Ensures the test suite executes in milliseconds while still validating HTTP boundaries, Pydantic schemas, and error handling.
+
+## ADR-007: Content-Based Deduplication (SHA-256)
+* **Date:** 2026-06-21
+* **Status:** Accepted
+* **Context:** Preventing duplicate embeddings from polluting the vector database and degrading retrieval quality.
+* **Decision:** Implemented a SHA-256 hashing mechanism on the raw incoming file bytes.
+* **Consequences:** Eliminates redundant compute costs and prevents identical documents (even if renamed) from being embedded twice. Required adding a relational `documents` tracking table alongside the `pgvector` nodes.
