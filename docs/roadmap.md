@@ -18,10 +18,10 @@
 - [X] Error handling + logging
 
 ## Phase 3: Retrieval (Week 3-4)
-- [ ] Query embedding generation
-- [ ] pgvector similarity search
-- [ ] Hybrid search (BM25 + dense)
-- [ ] POST /query endpoint with citations
+- [X] Query embedding generation
+- [X] pgvector similarity search
+- [X] Hybrid search (BM25 + dense)
+- [X] POST /query endpoint with citations
 
 ## Phase 4: Production Readiness (Week 5-6)
 - [ ] Golden dataset testing (pytest)

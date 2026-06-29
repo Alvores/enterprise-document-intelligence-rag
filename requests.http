@@ -14,3 +14,11 @@ Content-Type: application/pdf
 
 < ./data/attention_is_all_you_need.pdf
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Ask a Question (RAG Retrieval)
+POST http://localhost:8000/query
+Content-Type: application/json
+
+{
+  "query": "What is multi-head attention and how does it work?"
+}

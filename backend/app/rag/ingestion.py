@@ -46,7 +46,9 @@ class IngestionService:
                 port=url.port,
                 user=url.username,
                 table_name="enterprise_documents",
-                embed_dim=settings.EMBEDDING_DIMENSION
+                embed_dim=settings.EMBEDDING_DIMENSION,
+                hybrid_search=True,
+                text_search_config="english"
             )
             self.pipeline.vector_store = self._vector_store
         return self._vector_store

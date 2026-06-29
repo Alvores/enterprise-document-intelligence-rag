@@ -5,7 +5,7 @@ from backend.app.api import health
 from backend.app.core.config import settings
 from backend.app.db.connection import db_manager
 from backend.app.core.logging import logger
-from backend.app.api import health, documents
+from backend.app.api import health, documents, queries
 
 def create_app() -> FastAPI:
     app = FastAPI(
@@ -38,6 +38,7 @@ def create_app() -> FastAPI:
     # Include Routers
     app.include_router(health.router)
     app.include_router(documents.router)
+    app.include_router(queries.router)
     
     return app
 
