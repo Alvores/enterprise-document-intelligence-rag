@@ -54,6 +54,7 @@
 
 ## ADR-008: Overriding LLM Refine Prompts
 * **Date:** 2026-06-28
+* **Status:** Accepted
 * **Context:** LlamaIndex automatically chunks large context retrievals and uses a "compact and refine" strategy if the retrieved nodes exceed the LLM's context window.
 * **Decision:** Explicitly override both `text_qa_template` and `refine_template` with custom, strict enterprise prompts.
 * **Consequences:** Prevents the framework from falling back to generic default prompts during multi-chunk refinement, guaranteeing the LLM strictly adheres to "only answer from context" rules across all pagination loops.
