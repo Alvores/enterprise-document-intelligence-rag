@@ -21,7 +21,7 @@ Query → Embedding → Hybrid Search → LLM → Answer
 ## Status Tracker
 - ✅ **Phase 1 (Foundation):** FastAPI, PostgreSQL, pgvector, Logging, Health endpoints
 - ✅ **Phase 2 (Ingestion):** PDF upload, PyMuPDF parsing, LlamaIndex pipeline, pgvector persistence
-- ⏳ **Phase 3 (Retrieval):** Vector query, hybrid search (BM25), LLM synthesis
+- ✅ **Phase 3 (Retrieval):** Vector query, hybrid search (BM25), LLM synthesis
 - ⏳ **Phase 4 (Production):** Golden dataset testing, Dockerfile, GCP Cloud Run
 - ⏳ **Phase 5 (Frontend):** React SPA UI
 

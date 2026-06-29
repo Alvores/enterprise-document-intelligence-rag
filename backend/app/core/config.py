@@ -25,6 +25,10 @@ class Settings:
     # Chunking Strategy
     CHUNK_SIZE: int = int(os.getenv("CHUNK_SIZE", "512"))
     CHUNK_OVERLAP: int = int(os.getenv("CHUNK_OVERLAP", "50"))
+
+    # Generation LLM Configuration
+    LLM_MODEL: str = os.getenv("LLM_MODEL", "llama3.1:8b")
+    LLM_TEMPERATURE: float = float(os.getenv("LLM_TEMPERATURE", "0.1"))
     
     # File Upload Constraints
     MAX_FILE_SIZE_BYTES: int = int(os.getenv("MAX_FILE_SIZE_BYTES", str(50 * 1024 * 1024))) # 50MB
