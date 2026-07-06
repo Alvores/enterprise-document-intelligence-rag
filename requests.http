@@ -7,6 +7,7 @@ GET http://localhost:8000/health/db
 ### Upload the Attention Paper
 POST http://localhost:8000/documents/upload
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+X-API-Key: enterprise-rag-super-secret-key-2026
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="file"; filename="attention_is_all_you_need.pdf"
@@ -18,6 +19,7 @@ Content-Type: application/pdf
 ### Ask a Question (RAG Retrieval)
 POST http://localhost:8000/query
 Content-Type: application/json
+X-API-Key: enterprise-rag-super-secret-key-2026
 
 {
   "query": "What is multi-head attention and how does it work?"

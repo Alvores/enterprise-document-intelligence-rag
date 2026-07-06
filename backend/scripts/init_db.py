@@ -11,6 +11,8 @@ from backend.app.core.logging import logger
 def initialize_database():
     """Creates the necessary relational tables for the RAG platform."""
     create_documents_table_sql = """
+    CREATE EXTENSION IF NOT EXISTS vector;
+    
     CREATE TABLE IF NOT EXISTS documents (
         id UUID PRIMARY KEY,
         filename VARCHAR(255) NOT NULL,

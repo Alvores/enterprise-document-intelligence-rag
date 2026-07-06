@@ -1,4 +1,5 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, status
+from fastapi import APIRouter, UploadFile, File, HTTPException, status, Depends
+from backend.app.core.security import verify_api_key
 from backend.app.schemas.document import DocumentUploadResponse
 from backend.app.rag.ingestion import ingestion_service
 from backend.app.core.config import settings
@@ -9,7 +10,8 @@ router = APIRouter(tags=["Document Management"])
 @router.post(
     "/documents/upload", 
     response_model=DocumentUploadResponse,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(verify_api_key)]
 )
 async def upload_document(file: UploadFile = File(...)):
     if not file.filename.lower().endswith('.pdf'):
