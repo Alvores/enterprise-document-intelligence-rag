@@ -7,6 +7,9 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 # Set the working directory inside the container
 WORKDIR /app
 
+# Explicitly define the Python path so module imports resolve correctly globally
+ENV PYTHONPATH=/app
+
 # Copy the lockfile and configuration first to leverage Docker layer caching
 COPY pyproject.toml uv.lock ./
 
@@ -21,5 +24,4 @@ COPY ./backend ./backend
 EXPOSE 8000
 
 # Start the FastAPI server using the uv virtual environment environment
-# CMD ["sh", "-c", "uv run python backend/app/db/init_db.py && uv run uvicorn backend.app.main:app --host 0.0.0.0 --port 8000"]
-CMD ["uv", "run", "uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uv run python backend/scripts/init_db.py && uv run uvicorn backend.app.main:app --host 0.0.0.0 --port 8000"]
