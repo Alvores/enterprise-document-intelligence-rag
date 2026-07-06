@@ -2,6 +2,7 @@
 * text=auto
 
 # Explicitly ensure configuration, code, and lock files use LF line endings
+Dockerfile text eol=lf
 .env* text eol=lf
 *.toml text eol=lf
 *.version text eol=lf

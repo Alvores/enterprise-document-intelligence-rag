@@ -1,6 +1,9 @@
 from typing import Dict, Any
 from urllib.parse import urlparse
 
+from transformers import AutoTokenizer
+from llama_index.core.callbacks import CallbackManager, TokenCountingHandler
+from llama_index.core import Settings as LlamaIndexSettings
 from llama_index.core import VectorStoreIndex, PromptTemplate
 from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.core.query_engine import RetrieverQueryEngine
@@ -8,7 +11,7 @@ from llama_index.vector_stores.postgres import PGVectorStore
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 from backend.app.core.config import settings
-from backend.app.core.constants import TOP_K_RETRIEVAL, HYBRID_VECTOR_WEIGHT, RAG_SYSTEM_TEMPLATE, RAG_REFINE_TEMPLATE
+from backend.app.rag.constants import TOP_K_RETRIEVAL, HYBRID_VECTOR_WEIGHT, RAG_SYSTEM_TEMPLATE, RAG_REFINE_TEMPLATE
 from backend.app.services.ollama_client import llm_service
 from backend.app.core.logging import logger
 
@@ -19,8 +22,15 @@ class RetrievalService:
         # We use the exact same embedding model used in ingestion to ensure vectors match
         self.embed_model = HuggingFaceEmbedding(
             model_name=settings.EMBEDDING_MODEL,
-            device="cpu"
+            device="cpu",
+            query_instruction="Represent this sentence for searching relevant articles: "
         )
+
+        # Initialize native tokenizers for exact LLMOps telemetry
+        logger.info("Downloading native tokenizers for telemetry...")
+        self.embed_tokenizer = AutoTokenizer.from_pretrained(settings.EMBEDDING_TOKENIZER_ID)
+        self.llm_tokenizer = AutoTokenizer.from_pretrained(settings.LLM_TOKENIZER_ID)
+
         self._index = None
         self._query_engine = None
 
@@ -79,6 +89,11 @@ class RetrievalService:
     def query(self, user_question: str) -> Dict[str, Any]:
         """Executes a RAG query and extracts citations."""
         logger.info("Executing RAG query", extra={"query": user_question})
+
+        # Set up exact token counters for this specific request
+        embed_counter = TokenCountingHandler(tokenizer=self.embed_tokenizer.encode)
+        llm_counter = TokenCountingHandler(tokenizer=self.llm_tokenizer.encode)
+        LlamaIndexSettings.callback_manager = CallbackManager([embed_counter, llm_counter])
         
         try:
             # 1. Run the query through the engine
@@ -93,10 +108,17 @@ class RetrievalService:
                     "score": float(node.score) if node.score else 0.0,
                     "text": node.get_content().strip()
                 })
-                
+
+            # 3. Log Exact Telemetry
+            logger.info("Exact LLM Telemetry Captured", extra={
+                "prompt_tokens": llm_counter.prompt_llm_token_count,
+                "completion_tokens": llm_counter.completion_llm_token_count,
+                "total_llm_tokens": llm_counter.total_llm_token_count,
+                "embedding_tokens": embed_counter.total_embedding_token_count
+            })    
             logger.info("Query successful", extra={"citations_retrieved": len(citations)})
             
-            # 3. Return the payload
+            # 4. Return the payload
             return {
                 "answer": str(response),
                 "sources": citations

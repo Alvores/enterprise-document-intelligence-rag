@@ -1,5 +1,6 @@
 import time
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
+from backend.app.core.security import verify_api_key
 from backend.app.schemas.chat import QueryRequest, QueryResponse, Citation
 from backend.app.rag.retrieval import retrieval_service
 from backend.app.core.logging import logger
@@ -9,7 +10,8 @@ router = APIRouter(tags=["Query & Retrieval"])
 @router.post(
     "/query", 
     response_model=QueryResponse,
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(verify_api_key)]
 )
 async def execute_query(request: QueryRequest):
     start_time = time.time()

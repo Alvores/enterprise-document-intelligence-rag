@@ -1,9 +1,20 @@
 from unittest.mock import patch
+from backend.app.core.config import settings
+
+def test_upload_unauthorized(client):
+    """Ensure the API rejects calls missing a valid API key completely."""
+    file_data = {"file": ("test.pdf", b"dummy data", "application/pdf")}
+    response = client.post("/documents/upload", files=file_data) # No headers
+    assert response.status_code == 401
 
 def test_upload_invalid_file_type(client):
     """Ensure the API rejects non-PDF files before triggering AI logic."""
     file_data = {"file": ("malicious.exe", b"dummy bytes", "application/x-msdownload")}
-    response = client.post("/documents/upload", files=file_data)
+    response = client.post(
+        "/documents/upload",
+        files=file_data,
+        headers={"X-API-Key": settings.API_KEY}
+    )
     
     assert response.status_code == 400
     assert response.json()["detail"] == "Only PDF files are accepted."
@@ -22,7 +33,11 @@ def test_upload_valid_pdf(mock_ingest, client):
 
     # 2. Send a fake PDF payload
     file_data = {"file": ("test_paper.pdf", b"%PDF-1.4 dummy data", "application/pdf")}
-    response = client.post("/documents/upload", files=file_data)
+    response = client.post(
+        "/documents/upload",
+        files=file_data,
+        headers={"X-API-Key": settings.API_KEY}
+    )
 
     # 3. Assertions
     assert response.status_code == 201

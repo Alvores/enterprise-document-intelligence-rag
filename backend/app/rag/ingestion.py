@@ -4,6 +4,9 @@ from urllib.parse import urlparse
 from typing import Dict, Any
 import hashlib
 
+from transformers import AutoTokenizer
+from llama_index.core.callbacks import CallbackManager, TokenCountingHandler
+from llama_index.core import Settings as LlamaIndexSettings
 from llama_index.core import Document as LlamaDocument
 from llama_index.core.ingestion import IngestionPipeline
 from llama_index.core.node_parser import SentenceSplitter
@@ -19,8 +22,13 @@ class IngestionService:
         # Initialize embedding model (Forced to CPU per ADR-005)
         self.embed_model = HuggingFaceEmbedding(
             model_name=settings.EMBEDDING_MODEL,
-            device="cpu"
+            device="cpu",
+            query_instruction="Represent this sentence for searching relevant articles: "
         )
+        
+        # Load embedding tokenizer identifier
+        logger.info("Downloading native embedding tokenizer for ingestion telemetry...")
+        self.embed_tokenizer = AutoTokenizer.from_pretrained(settings.EMBEDDING_TOKENIZER_ID)
         
         # Configure chunking strategy
         self.pipeline = IngestionPipeline(
@@ -96,7 +104,11 @@ class IngestionService:
                         "status": "skipped_duplicate"
                     }
 
-        # 3. Proceed with Ingestion (if new file)
+        # 3. Setup Token Telemetry for Ingestion
+        embed_counter = TokenCountingHandler(tokenizer=self.embed_tokenizer.encode)
+        LlamaIndexSettings.callback_manager = CallbackManager([embed_counter])
+
+        # 4. Proceed with Ingestion (if new file)
         raw_text = self.extract_text(pdf_bytes)
         document_id = str(uuid.uuid4())
         
@@ -111,13 +123,21 @@ class IngestionService:
         if not nodes:
             raise ValueError("Ingestion pipeline produced zero chunks.")
             
-        # 4. Save to Document Tracking Table
+        # 5. Save to Document Tracking Table
         self._store_document_metadata(
             document_id=document_id,
             filename=filename,
             file_hash=file_hash,
             chunk_count=len(nodes)
         )
+            
+#       6. Log Exact Embedding Telemetry
+        logger.info("Exact Embedding Telemetry Captured", extra={
+            "document_id": document_id,
+            "file_name": filename,
+            "chunks_generated": len(nodes),
+            "total_embedding_tokens": embed_counter.total_embedding_token_count
+        })
             
         logger.info("Ingestion complete", extra={
             "document_id": document_id, 

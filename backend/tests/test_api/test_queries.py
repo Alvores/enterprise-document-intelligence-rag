@@ -1,9 +1,20 @@
 from unittest.mock import patch
+from backend.app.core.config import settings
+
+def test_query_unauthorized(client):
+    """Ensure the query loop protects content against unauthenticated requests."""
+    payload = {"query": "What is attention?"}
+    response = client.post("/query", json=payload) # No headers
+    assert response.status_code == 401
 
 def test_query_validation_error(client):
     """Ensure the API rejects empty or overly short queries before hitting the LLM."""
     payload = {"query": "a"} # Shorter than min_length=2
-    response = client.post("/query", json=payload)
+    response = client.post(
+        "/query",
+        json=payload,
+        headers={"X-API-Key": settings.API_KEY}
+    )
     
     assert response.status_code == 422
 
@@ -26,7 +37,11 @@ def test_successful_rag_query(mock_query, client):
     
     # 2. Send the HTTP request
     payload = {"query": "What is attention?"}
-    response = client.post("/query", json=payload)
+    response = client.post(
+        "/query",
+        json=payload,
+        headers={"X-API-Key": settings.API_KEY}
+    )
     
     # 3. Assertions
     assert response.status_code == 200
