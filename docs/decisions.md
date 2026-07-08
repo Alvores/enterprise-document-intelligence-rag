@@ -58,3 +58,17 @@
 * **Context:** LlamaIndex automatically chunks large context retrievals and uses a "compact and refine" strategy if the retrieved nodes exceed the LLM's context window.
 * **Decision:** Explicitly override both `text_qa_template` and `refine_template` with custom, strict enterprise prompts.
 * **Consequences:** Prevents the framework from falling back to generic default prompts during multi-chunk refinement, guaranteeing the LLM strictly adheres to "only answer from context" rules across all pagination loops.
+
+## ADR-009: Asymmetric Embedding Query Instructions
+* **Date:** 2026-07-05
+* **Status:** Accepted
+* **Context:** The `BAAI/bge-small-en-v1.5` model requires specific instruction prefixes for query embeddings to maintain high cosine similarity scores during retrieval.
+* **Decision:** Hardcode the `query_instruction` parameter directly into the `HuggingFaceEmbedding` initialization.
+* **Consequences:** Ensures accurate chunk retrieval without permanently appending the prompt to the stored document vectors.
+
+## ADR-010: Native Transformers for Exact Token Telemetry
+* **Date:** 2026-07-05
+* **Status:** Accepted
+* **Context:** Required accurate token counting for LLMOps telemetry. Proxy tokenizers like `tiktoken` can notably miscalculate open-source model chunk boundaries.
+* **Decision:** Import `AutoTokenizer` directly from the Hugging Face `transformers` library, utilizing the exact vocabularies of the BGE and Qwen models.
+* **Consequences:** Provides 100% precise token usage logging for both embeddings and generations without relying on inaccurate OpenAI approximations.

@@ -17,20 +17,26 @@
 - [X] POST /documents/upload endpoint
 - [X] Error handling + logging
 
-## Phase 3: Retrieval (Week 3-4)
+## Phase 3: Retrieval (Week 3)
 - [X] Query embedding generation
 - [X] pgvector similarity search
 - [X] Hybrid search (BM25 + dense)
 - [X] POST /query endpoint with citations
 
-## Phase 4: Production Readiness (Week 5-6)
-- [ ] Golden dataset testing (pytest)
-- [ ] Dockerfile + docker-compose
-- [ ] GCP Cloud Run deployment
-- [ ] Monitoring + health checks
-- [ ] Implement Least Privilege Principal (DB User isolation / IAM Auth)
+## Phase 4: Production Readiness (Week 4)
+- [x] API Key Security Header Validation
+- [x] Exact LLMOps Telemetry Logging (Hugging Face Native)
+- [x] Golden dataset testing (pytest + LLM Judge)
+- [x] Automated Database Init Script
+- [x] Dockerfile + docker-compose containerization
 
-## Phase 5: Frontend (Week 7)
+## Phase 5: Cloud Deployment (Week 5)
+- [ ] Provision Serverless PostgreSQL (Neon)
+- [ ] Push Docker container to Google Artifact Registry
+- [ ] Deploy API to Google Cloud Run (Serverless)
+- [ ] Configure GCP Secret Manager for API Keys
+
+## Phase 5: Frontend (Week 6)
 - [ ] React SPA
 - [ ] PDF upload UI
 - [ ] Chat interface
