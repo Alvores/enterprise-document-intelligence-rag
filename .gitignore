@@ -222,3 +222,4 @@ __marimo__/
 # Local Data
 data/*
 !data/.gitkeep
+!data/attention_is_all_you_need.pdf
