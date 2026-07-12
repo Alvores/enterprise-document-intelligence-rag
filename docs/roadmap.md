@@ -31,12 +31,12 @@
 - [x] Dockerfile + docker-compose containerization
 
 ## Phase 5: Cloud Deployment (Week 5)
-- [ ] Provision Serverless PostgreSQL (Neon)
+- [ ] Provision PostgreSQL Cloud SQL
 - [ ] Push Docker container to Google Artifact Registry
 - [ ] Deploy API to Google Cloud Run (Serverless)
 - [ ] Configure GCP Secret Manager for API Keys
 
-## Phase 5: Frontend (Week 6)
+## Phase 6: Frontend (Week 6)
 - [ ] React SPA
 - [ ] PDF upload UI
 - [ ] Chat interface

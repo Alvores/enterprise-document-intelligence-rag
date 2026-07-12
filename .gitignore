@@ -223,3 +223,16 @@ __marimo__/
 data/*
 !data/.gitkeep
 !data/attention_is_all_you_need.pdf
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
