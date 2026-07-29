@@ -1,6 +1,7 @@
 # Enable essential GCP APIs required for the Enterprise RAG Platform
 resource "google_project_service" "enabled_apis" {
   for_each = toset([
+    "cloudresourcemanager.googleapis.com", # Cloud Resource Manager
     "run.googleapis.com",               # Cloud Run
     "sqladmin.googleapis.com",          # Cloud SQL
     "secretmanager.googleapis.com",     # Secret Manager
