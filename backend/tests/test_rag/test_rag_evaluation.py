@@ -1,5 +1,6 @@
-from llama_index.llms.ollama import Ollama
 from pathlib import Path
+
+from llama_index.llms.ollama import Ollama
 
 from backend.app.core.config import settings
 
