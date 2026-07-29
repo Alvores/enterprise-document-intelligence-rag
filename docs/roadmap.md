@@ -30,13 +30,16 @@
 - [x] Automated Database Init Script
 - [x] Dockerfile + docker-compose containerization
 
-## Phase 5: Cloud Deployment (Week 5)
-- [ ] Provision Serverless PostgreSQL (Neon)
-- [ ] Push Docker container to Google Artifact Registry
-- [ ] Deploy API to Google Cloud Run (Serverless)
-- [ ] Configure GCP Secret Manager for API Keys
+## Phase 5: Cloud Deployment (Weeks 5-7)
+- [x] Infrastructure as Code (Terraform) setup with remote GCS state
+- [x] Provision private Cloud SQL (PostgreSQL 16) with VPC Peering
+- [x] Push Docker container to Google Artifact Registry
+- [x] Deploy API to Google Cloud Run (Serverless) with Direct VPC Egress
+- [x] Configure GCP Secret Manager for Database URLs and API Keys
+- [x] Implement LLM Factory for environment switching (Gemini 3.6 Flash for cloud)
+- [x] Implement GitHub Actions CI/CD (PR validation, auto-publish, manual infra control)
 
-## Phase 5: Frontend (Week 6)
+## Phase 6: Frontend (Week 6)
 - [ ] React SPA
 - [ ] PDF upload UI
 - [ ] Chat interface

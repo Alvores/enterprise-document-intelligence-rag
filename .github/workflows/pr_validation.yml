@@ -1,0 +1,96 @@
+name: "CI: PR Validation"
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "backend/**"
+      - "infra/terraform/**"
+      - ".github/workflows/pr_validation.yml"
+
+env:
+  GCP_PROJECT_ID: "enterprise-rag-2026"
+  GCP_PROJECT_NUMBER: "221633325725"
+  GCP_REGION: "us-central1"
+
+permissions:
+  contents: read
+  id-token: write # Required for WIF OIDC token exchange
+
+jobs:
+  backend-validation:
+    name: "Python Lint & Test"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: |
+          # Install testing and linting tools globally in the CI runner
+          uv pip install --system ruff pytest
+          
+          # Navigate to backend and install the project dependencies from pyproject.toml
+          uv pip install --system .
+
+      - name: Lint with Ruff
+        run: ruff check backend/
+
+      - name: Format Check with Ruff
+        run: ruff format --check backend/
+
+      - name: Run Pytest
+        env:
+          POSTGRES_USER: "postgres"
+          POSTGRES_PASSWORD: "postgres"
+          POSTGRES_HOST: "localhost"
+          POSTGRES_PORT: "5432"
+          POSTGRES_DB: "ragdb"
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/ragdb"
+          OLLAMA_HOST: "http://localhost:11434"
+          LLM_MODEL: "qwen3:8b"
+          GEMINI_API_KEY: "mock-gemini-api-key-for-ci"
+          EMBEDDING_MODEL: "BAAI/bge-small-en-v1.5"
+          TEST_API_URL: "http://localhost:8000"
+          API_KEY: "mock-super-secret-key"
+        run: |
+          cd backend
+          pytest
+
+  infra-validation:
+    name: "Terraform Lint & Plan"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud via WIF
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: "projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider"
+          service_account: "tf-runner@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com"
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.0"
+
+      - name: Terraform Format Check
+        run: cd infra/terraform && terraform fmt -check
+
+      - name: Terraform Init
+        run: cd infra/terraform && terraform init
+
+      - name: Terraform Plan
+        run: |
+          cd infra/terraform
+          terraform plan -var="project_id=${{ env.GCP_PROJECT_ID }}" -var="region=${{ env.GCP_REGION }}"

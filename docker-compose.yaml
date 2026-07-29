@@ -26,7 +26,7 @@ services:
     container_name: rag-api
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8000:8080"
     environment:
       # Use the Docker internal DNS network service name 'db' instead of 'localhost'
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}

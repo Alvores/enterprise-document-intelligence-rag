@@ -1,11 +1,11 @@
-from pydantic import BaseModel, Field
-from typing import Optional
 from datetime import datetime
+
+from pydantic import BaseModel, Field
 
 
 class DocumentUploadResponse(BaseModel):
     """Response after a document is uploaded and processed."""
-    
+
     document_id: str = Field(..., description="Unique document identifier")
     filename: str = Field(..., description="Original filename")
     chunk_count: int = Field(..., description="Number of chunks created")

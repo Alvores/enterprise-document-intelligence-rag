@@ -1,0 +1,53 @@
+name: "Ops: Manual Infra Control"
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Select the Terraform action to execute"
+        required: true
+        default: "apply"
+        type: choice
+        options:
+          - apply
+          - destroy
+
+env:
+  GCP_PROJECT_ID: "enterprise-rag-2026"
+  GCP_PROJECT_NUMBER: "221633325725"
+  GCP_REGION: "us-central1"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  terraform-operation:
+    name: "Terraform Run"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud via WIF
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: "projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider"
+          service_account: "tf-runner@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com"
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.0"
+
+      - name: Terraform Init
+        run: cd infra/terraform && terraform init
+
+      - name: Execute Terraform Action
+        run: |
+          cd infra/terraform
+          if [ "${{ github.event.inputs.action }}" = "apply" ]; then
+            terraform apply -auto-approve -var="project_id=${{ env.GCP_PROJECT_ID }}" -var="region=${{ env.GCP_REGION }}"
+          elif [ "${{ github.event.inputs.action }}" = "destroy" ]; then
+            terraform destroy -auto-approve -var="project_id=${{ env.GCP_PROJECT_ID }}" -var="region=${{ env.GCP_REGION }}"
+          fi

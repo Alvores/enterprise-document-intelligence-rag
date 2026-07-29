@@ -5,12 +5,12 @@ Enterprise RAG Constants and Prompts
 # --- Retrieval Tuning ---
 
 # How many chunks to retrieve from the database
-TOP_K_RETRIEVAL = 5 
+TOP_K_RETRIEVAL = 5
 
 # Hybrid Search Weights (Alpha)
 # 1.0 = Pure Vector Search, 0.0 = Pure Keyword Search
 # 0.7 leans slightly toward semantic meaning while preserving exact keyword matches.
-HYBRID_VECTOR_WEIGHT = 0.7 
+HYBRID_VECTOR_WEIGHT = 0.7
 
 # --- Prompt Engineering ---
 
@@ -26,7 +26,8 @@ Context Information is below:
 
 Rules of Engagement:
 1. Analyze the context carefully. Extract only the information necessary to answer the query.
-2. If the answer is not explicitly contained within the context, you must reply: "I do not have enough information in the provided documents to answer this query."
+2. If the answer is not explicitly contained within the context, you must reply:
+   "I do not have enough information in the provided documents to answer this query."
 3. Do not rely on your prior knowledge.
 4. Keep your answer concise, professional, and directly address the user's question.
 
