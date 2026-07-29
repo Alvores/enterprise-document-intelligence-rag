@@ -40,7 +40,6 @@ jobs:
           uv pip install --system ruff pytest
           
           # Navigate to backend and install the project dependencies from pyproject.toml
-          cd backend
           uv pip install --system .
 
       - name: Lint with Ruff

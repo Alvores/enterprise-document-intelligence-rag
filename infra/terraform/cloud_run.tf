@@ -54,22 +54,22 @@ resource "google_cloud_run_v2_service" "rag_api_service" {
         name  = "EMBEDDING_MODEL"
         value = "BAAI/bge-small-en-v1.5"
       }
-      
+
       # LLM to use for RAG retrieval
       env {
         name  = "LLM_MODEL"
         value = "gemini-3.6-flash"
       }
 
-    env {
-      name = "GEMINI_API_KEY"
-      value_source {
-        secret_key_ref {
-          secret  = google_secret_manager_secret.llm_api_key_secret.secret_id
-          version = "latest"
+      env {
+        name = "GEMINI_API_KEY"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.llm_api_key_secret.secret_id
+            version = "latest"
+          }
         }
       }
-    }
 
     }
 
