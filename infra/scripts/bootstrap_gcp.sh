@@ -2,6 +2,12 @@
 gcloud storage buckets create gs://enterprise-rag-2026-tf-state --location=us-central1
 gcloud storage buckets update gs://enterprise-rag-2026-tf-state --versioning
 
+## Create Artifact Registry
+gcloud artifacts repositories create rag-platform-repo \
+  --repository-format=docker \
+  --location=us-central1 \
+  --description="Secure private container registry"
+
 ## Enable IAM Credentials API
 gcloud services enable iamcredentials.googleapis.com
 gcloud services enable cloudresourcemanager.googleapis.com
@@ -62,6 +68,11 @@ gcloud projects add-iam-policy-binding enterprise-rag-2026 \
 gcloud projects add-iam-policy-binding enterprise-rag-2026 \
   --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
   --role="roles/servicenetworking.networksAdmin"
+
+# Manage Artifact Registry Pushes
+gcloud projects add-iam-policy-binding enterprise-rag-2026 \
+  --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
+  --role="roles/artifactregistry.writer"
 
 ## Establish Trust Binding
 gcloud projects describe enterprise-rag-2026 --format="value(projectNumber)"
