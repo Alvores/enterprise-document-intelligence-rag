@@ -1,11 +1,13 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from backend.app.api import documents, health, queries
 from backend.app.core.config import settings
-from backend.app.db.connection import db_manager
 from backend.app.core.logging import logger
-from backend.app.api import health, documents, queries
+from backend.app.db.connection import db_manager
+
 
 # Define the lifespan context manager BEFORE creating the app
 @asynccontextmanager
@@ -19,18 +21,19 @@ async def lifespan(app: FastAPI):
     if db_manager.pool:
         db_manager.pool.closeall()
 
+
 def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.APP_NAME,
         version=settings.APP_VERSION,
         description="Enterprise Document Intelligence API powered by FastAPI and LlamaIndex",
-        lifespan=lifespan
+        lifespan=lifespan,
     )
-    
+
     # CORS Configuration
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:3000"], # React local development
+        allow_origins=["http://localhost:3000"],  # React local development
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -40,7 +43,8 @@ def create_app() -> FastAPI:
     app.include_router(health.router)
     app.include_router(documents.router)
     app.include_router(queries.router)
-    
+
     return app
+
 
 app = create_app()

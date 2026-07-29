@@ -1,10 +1,12 @@
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 # Automatically locate the .env file at the project root
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent.parent
 load_dotenv(dotenv_path=ROOT_DIR / ".env")
+
 
 def get_env_int(key: str, default: int) -> int:
     val = os.getenv(key)
@@ -12,11 +14,13 @@ def get_env_int(key: str, default: int) -> int:
         return default
     return int(val)
 
+
 def get_env_float(key: str, default: float) -> float:
     val = os.getenv(key)
     if not val or val.strip().lower() in ("none", ""):
         return default
     return float(val)
+
 
 class Settings:
     APP_NAME: str = "Enterprise Document Intelligence RAG"
@@ -24,12 +28,12 @@ class Settings:
 
     # Security Configuration
     API_KEY: str = os.getenv("API_KEY")
-    
+
     # Database Configuration
     DATABASE_URL: str = os.getenv("DATABASE_URL")
     if not DATABASE_URL:
         raise ValueError("DATABASE_URL environment variable is not set")
-    
+
     # Ollama Configuration
     OLLAMA_HOST: str = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 
@@ -37,7 +41,7 @@ class Settings:
     EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL", "bge-small-en-v1.5")
     EMBEDDING_TOKENIZER_ID: str = os.getenv("EMBEDDING_TOKENIZER_ID", "BAAI/bge-small-en-v1.5")
     EMBEDDING_DIMENSION: int = int(os.getenv("EMBEDDING_DIMENSION", "384"))
-    
+
     # Chunking Strategy
     CHUNK_SIZE: int = int(os.getenv("CHUNK_SIZE", "512"))
     CHUNK_OVERLAP: int = int(os.getenv("CHUNK_OVERLAP", "50"))
@@ -46,8 +50,9 @@ class Settings:
     LLM_MODEL: str = os.getenv("LLM_MODEL", "qwen3:8b")
     LLM_TOKENIZER_ID: str = os.getenv("LLM_TOKENIZER_ID", "Qwen/Qwen3-8B")
     LLM_TEMPERATURE: float = float(os.getenv("LLM_TEMPERATURE", "0.1"))
-    
+
     # File Upload Constraints
-    MAX_FILE_SIZE_BYTES: int = int(os.getenv("MAX_FILE_SIZE_BYTES", str(50 * 1024 * 1024))) # 50MB
+    MAX_FILE_SIZE_BYTES: int = int(os.getenv("MAX_FILE_SIZE_BYTES", str(50 * 1024 * 1024)))  # 50MB
+
 
 settings = Settings()

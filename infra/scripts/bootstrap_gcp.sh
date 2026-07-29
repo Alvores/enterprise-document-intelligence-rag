@@ -4,6 +4,7 @@ gcloud storage buckets update gs://enterprise-rag-2026-tf-state --versioning
 
 ## Enable IAM Credentials API
 gcloud services enable iamcredentials.googleapis.com
+gcloud services enable cloudresourcemanager.googleapis.com
 
 ## Create Workload Identity Pool
 gcloud iam workload-identity-pools create github-actions-pool \
@@ -56,6 +57,11 @@ gcloud projects add-iam-policy-binding enterprise-rag-2026 \
 gcloud projects add-iam-policy-binding enterprise-rag-2026 \
   --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
   --role="roles/storage.admin"
+
+# Manage VPC Peering for Cloud SQL
+gcloud projects add-iam-policy-binding enterprise-rag-2026 \
+  --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
+  --role="roles/servicenetworking.networksAdmin"
 
 ## Establish Trust Binding
 gcloud projects describe enterprise-rag-2026 --format="value(projectNumber)"

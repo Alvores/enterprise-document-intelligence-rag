@@ -4,8 +4,9 @@ from pathlib import Path
 # Add project root to Python path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-from backend.app.db.connection import db_manager
 from backend.app.core.logging import logger
+from backend.app.db.connection import db_manager
+
 
 def initialize_database():
     """Creates the necessary relational tables for the RAG platform."""
@@ -21,7 +22,7 @@ def initialize_database():
     );
     CREATE INDEX IF NOT EXISTS idx_file_hash ON documents(file_hash);
     """
-    
+
     try:
         with db_manager.get_connection() as conn:
             with conn.cursor() as cur:
@@ -31,6 +32,7 @@ def initialize_database():
     except Exception as e:
         logger.error("Failed to initialize database tables", extra={"error": str(e)})
         sys.exit(1)
+
 
 if __name__ == "__main__":
     initialize_database()
