@@ -63,3 +63,7 @@ testpaths = ["backend/tests"]
 [tool.uv.sources]
 torch = { index = "pytorch-cpu" }
 torchvision = { index = "pytorch-cpu" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["backend*"]

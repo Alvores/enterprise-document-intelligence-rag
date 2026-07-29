@@ -2,13 +2,13 @@
 resource "google_project_service" "enabled_apis" {
   for_each = toset([
     "cloudresourcemanager.googleapis.com", # Cloud Resource Manager
-    "run.googleapis.com",               # Cloud Run
-    "sqladmin.googleapis.com",          # Cloud SQL
-    "secretmanager.googleapis.com",     # Secret Manager
-    "artifactregistry.googleapis.com",  # Artifact Registry
-    "vpcaccess.googleapis.com",         # Serverless VPC Access
-    "servicenetworking.googleapis.com", # Private Service Connect (for Cloud SQL)
-    "iam.googleapis.com"                # Identity & Access Management
+    "run.googleapis.com",                  # Cloud Run
+    "sqladmin.googleapis.com",             # Cloud SQL
+    "secretmanager.googleapis.com",        # Secret Manager
+    "artifactregistry.googleapis.com",     # Artifact Registry
+    "vpcaccess.googleapis.com",            # Serverless VPC Access
+    "servicenetworking.googleapis.com",    # Private Service Connect (for Cloud SQL)
+    "iam.googleapis.com"                   # Identity & Access Management
   ])
 
   project = var.project_id
