@@ -72,3 +72,24 @@
 * **Context:** Required accurate token counting for LLMOps telemetry. Proxy tokenizers like `tiktoken` can notably miscalculate open-source model chunk boundaries.
 * **Decision:** Import `AutoTokenizer` directly from the Hugging Face `transformers` library, utilizing the exact vocabularies of the BGE and Qwen models.
 * **Consequences:** Provides 100% precise token usage logging for both embeddings and generations without relying on inaccurate OpenAI approximations.
+
+## ADR-011: LLM Environment Splitting (Factory Pattern)
+* **Date:** 2026-07-26
+* **Status:** Accepted
+* **Context:** Ollama runs locally but cannot run inside a standard serverless Cloud Run container.
+* **Decision:** Implement an LLMFactory that dynamically instantiates Ollama if running locally, or Gemini 3.6 Flash if a GEMINI_API_KEY (mapped from Secret Manager) is detected.
+* **Consequences:** Achieved parity between a $0 local dev environment and a high-availability, high-speed cloud runtime without modifying core retrieval logic.
+
+## ADR-012: Zero-Trust Database Networking
+* **Date:** 2026-07-26
+* **Status:** Accepted
+* **Context:** The PostgreSQL database containing raw enterprise documents needed to be secured against public internet exposure.
+* **Decision:** Provision Cloud SQL strictly with a private IP utilizing VPC Peering. Cloud Run traffic is routed via a Serverless Subnet using Direct VPC Egress (PRIVATE_RANGES_ONLY).
+* **Consequences:** The database is invisible to the public internet. Required advanced Terraform orchestration to handle eventual consistency locks during teardown.
+
+## ADR-013: Decoupled CI/CD Pipelines
+* **Date:** 2026-07-26
+* **Status:** Accepted
+* **Context:** Needed automated deployment checks without losing manual control over infrastructure costs.
+* **Decision:** Split GitHub Actions into three distinct workflows: PR Validation (automated lint/test/plan), Docker Publish (automated build/push on merge), and Ops Infrastructure Control (manual workflow_dispatch for Terraform apply/destroy).
+* **Consequences:** Ensures code quality on every PR while preventing accidental automated scaling or unapproved cloud billing events.

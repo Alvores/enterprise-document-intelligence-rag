@@ -1,22 +1,30 @@
-# Handle all text files automatically and normalize them to LF in the repository
-* text=auto
+# Default pattern to handle all text files and normalize them to LF
+* text=auto eol=lf
 
-# Explicitly ensure configuration, code, and lock files use LF line endings
+# Repository & Git Configuration
+.git* text eol=lf
+
+# Infrastructure & Configuration
 Dockerfile text eol=lf
+Makefile text eol=lf
 .env* text eol=lf
+*.example text eol=lf
 *.toml text eol=lf
+*.hcl text eol=lf
 *.version text eol=lf
-*.md text eol=lf
-uv.lock text eol=lf
 *.sh text eol=lf
 
-# Python and YAML files (common in your project)
+# Terraform Infrastructure
+*.tf text eol=lf
+*.tfvars text eol=lf
+
+# Python & Workflow Configuration
 *.py text eol=lf
 *.yaml text eol=lf
 *.yml text eol=lf
 
-# Terraform
-*.tf text eol=lf
-
-# Other
-*.example text eol=lf
+# Documentation, Diagrams, & Assets
+*.md text eol=lf
+*.drawio text eol=lf
+*.svg text eol=lf
+*.xml text eol=lf

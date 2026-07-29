@@ -51,7 +51,7 @@ class IngestionService:
                 database=url.path[1:],
                 host=url.hostname,
                 password=url.password,
-                port=url.port,
+                port=url.port or 5432,
                 user=url.username,
                 table_name="enterprise_documents",
                 embed_dim=settings.EMBEDDING_DIMENSION,

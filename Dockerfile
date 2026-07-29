@@ -21,7 +21,7 @@ RUN uv sync --frozen --no-dev --no-install-project
 COPY ./backend ./backend
 
 # Expose the port FastAPI runs on
-EXPOSE 8000
+EXPOSE 8080
 
 # Start the FastAPI server using the uv virtual environment environment
-CMD ["sh", "-c", "uv run python backend/scripts/init_db.py && uv run uvicorn backend.app.main:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "uv run --no-sync python backend/scripts/init_db.py && uv run --no-sync uvicorn backend.app.main:app --host 0.0.0.0 --port 8080"]

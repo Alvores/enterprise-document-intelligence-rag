@@ -1,0 +1,57 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="OYap5CGLKyNR3UVel5wY">
+    <mxGraphModel dx="2264" dy="1843" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="vpc_boundary" parent="1" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=10;fontStyle=1" value="Google Cloud: rag-vpc-network" vertex="1">
+          <mxGeometry height="400" width="600" x="120" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="subnet_boundary" parent="1" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;align=left;spacingLeft=10;" value="rag-serverless-subnet" vertex="1">
+          <mxGeometry height="280" width="240" x="150" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="cloud_run" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" value="Cloud Run&#xa;(RAG API Container)&#xa;Local Model: bge-small" vertex="1">
+          <mxGeometry height="80" width="180" x="170" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="cloud_sql" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1" value="Cloud SQL (PostgreSQL)&#xa;rag-postgres-db&#xa;+ pgvector extension" vertex="1">
+          <mxGeometry height="110" width="180" x="480" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="secret_manager" parent="1" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1" value="Secret Manager&#xa;(DB_URL, API_KEYS)" vertex="1">
+          <mxGeometry height="80" width="160" x="180" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="artifact_registry" parent="1" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1" value="Artifact Registry&#xa;(Docker Images)" vertex="1">
+          <mxGeometry height="80" width="160" x="490" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="user" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1" value="User / API Client" vertex="1">
+          <mxGeometry height="60" width="30" x="30" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="gemini_api" parent="1" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" value="Gemini API&lt;br/&gt;(gemini-3.6-flash)&lt;br&gt;Generative LLM" vertex="1">
+          <mxGeometry height="100" width="200" x="160" y="-30" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_user_cr" edge="1" parent="1" source="user" target="cloud_run">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_cr_sql" edge="1" parent="1" source="cloud_run" target="cloud_sql" value="Private Service Connect&#xa;(Port 5432)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_cr_secrets" edge="1" parent="1" source="cloud_run" target="secret_manager" value="IAM Decrypt">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="260" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_cr_gemini" edge="1" parent="1" source="cloud_run" target="gemini_api" value="REST API (HTTPS)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ar_cr" edge="1" parent="1" source="artifact_registry" target="cloud_run" value="Deploy Image">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="430" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

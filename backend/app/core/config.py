@@ -6,6 +6,18 @@ from dotenv import load_dotenv
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent.parent
 load_dotenv(dotenv_path=ROOT_DIR / ".env")
 
+def get_env_int(key: str, default: int) -> int:
+    val = os.getenv(key)
+    if not val or val.strip().lower() in ("none", ""):
+        return default
+    return int(val)
+
+def get_env_float(key: str, default: float) -> float:
+    val = os.getenv(key)
+    if not val or val.strip().lower() in ("none", ""):
+        return default
+    return float(val)
+
 class Settings:
     APP_NAME: str = "Enterprise Document Intelligence RAG"
     APP_VERSION: str = "0.1.0"

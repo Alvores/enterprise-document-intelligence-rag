@@ -12,7 +12,7 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 from backend.app.core.config import settings
 from backend.app.rag.constants import TOP_K_RETRIEVAL, HYBRID_VECTOR_WEIGHT, RAG_SYSTEM_TEMPLATE, RAG_REFINE_TEMPLATE
-from backend.app.services.ollama_client import llm_service
+from backend.app.services.llm_factory import llm_service
 from backend.app.core.logging import logger
 
 class RetrievalService:
@@ -43,7 +43,7 @@ class RetrievalService:
                 database=url.path[1:],
                 host=url.hostname,
                 password=url.password,
-                port=url.port,
+                port=url.port or 5432,
                 user=url.username,
                 table_name="enterprise_documents",
                 embed_dim=settings.EMBEDDING_DIMENSION,
