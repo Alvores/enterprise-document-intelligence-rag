@@ -1,5 +1,7 @@
+import os
 from pathlib import Path
 
+import pytest
 from llama_index.llms.ollama import Ollama
 
 from backend.app.core.config import settings
@@ -39,7 +41,11 @@ If the answer is incorrect, hallucinated, or missing the expected fact, output e
 GRADE:
 """
 
-
+@pytest.mark.skipif(
+    os.getenv("GITHUB_ACTIONS") == "true",
+    reason="Golden dataset evaluation requires a live PostgreSQL instance and Ollama LLM, \
+        which are not available in CI."
+)
 def test_golden_dataset_accuracy(client):
     """
     Evaluation test that seeds the database with the PDF, runs queries through
