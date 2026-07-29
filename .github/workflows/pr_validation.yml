@@ -51,6 +51,9 @@ jobs:
       - name: Run Pytest
         run: |
           cd backend
+          env:
+            DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/ragdb"
+            API_KEY: "enterprise-rag-super-secret-key-2026"
           pytest
 
   infra-validation:
