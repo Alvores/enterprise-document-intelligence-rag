@@ -41,10 +41,11 @@ If the answer is incorrect, hallucinated, or missing the expected fact, output e
 GRADE:
 """
 
+
 @pytest.mark.skipif(
     os.getenv("GITHUB_ACTIONS") == "true",
     reason="Golden dataset evaluation requires a live PostgreSQL instance and Ollama LLM, \
-        which are not available in CI."
+        which are not available in CI.",
 )
 def test_golden_dataset_accuracy(client):
     """
