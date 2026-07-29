@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 
 import psycopg2
+from psycopg2 import pool  # noqa: F401
 
 from backend.app.core.config import settings
 from backend.app.core.logging import logger

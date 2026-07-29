@@ -1,4 +1,5 @@
 from llama_index.llms.ollama import Ollama
+from pathlib import Path
 
 from backend.app.core.config import settings
 
@@ -46,8 +47,9 @@ def test_golden_dataset_accuracy(client):
     headers = {"X-API-Key": settings.API_KEY}
 
     # 1. SETUP: Ensure the document is in the database before querying
-    # Using the TestClient allows this to work locally or in Docker seamlessly.
-    pdf_path = "data/attention_is_all_you_need.pdf"
+    # Using Path(__file__) dynamically navigates up 4 directories to the repo root
+    repo_root = Path(__file__).resolve().parent.parent.parent.parent
+    pdf_path = repo_root / "data" / "attention_is_all_you_need.pdf"
     with open(pdf_path, "rb") as f:
         upload_response = client.post(
             "/documents/upload",
