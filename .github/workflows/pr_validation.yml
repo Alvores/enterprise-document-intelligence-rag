@@ -50,8 +50,18 @@ jobs:
 
       - name: Run Pytest
         env:
+          POSTGRES_USER: "postgres"
+          POSTGRES_PASSWORD: "postgres"
+          POSTGRES_HOST: "localhost"
+          POSTGRES_PORT: "5432"
+          POSTGRES_DB: "ragdb"
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/ragdb"
-          API_KEY: "enterprise-rag-super-secret-key-2026"
+          OLLAMA_HOST: "http://localhost:11434"
+          LLM_MODEL: "qwen3:8b"
+          GEMINI_API_KEY: "mock-gemini-api-key-for-ci"
+          EMBEDDING_MODEL: "BAAI/bge-small-en-v1.5"
+          TEST_API_URL: "http://localhost:8000"
+          API_KEY: "mock-super-secret-key"
         run: |
           cd backend
           pytest
