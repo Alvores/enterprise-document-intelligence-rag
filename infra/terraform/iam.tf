@@ -16,7 +16,7 @@ resource "google_secret_manager_secret_iam_member" "db_secret_access" {
 # Grant read access to the master API key
 resource "google_secret_manager_secret_iam_member" "api_key_access" {
   project   = var.project_id
-  secret_id = google_secret_manager_secret.api_key_secret.secret_id
+  secret_id = "RAG_API_KEY"
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.rag_api_sa.email}"
 }
@@ -31,7 +31,7 @@ resource "google_project_iam_member" "cloudsql_client" {
 # Grant read access to the LLM Key
 resource "google_secret_manager_secret_iam_member" "llm_key_access" {
   project   = var.project_id
-  secret_id = google_secret_manager_secret.llm_api_key_secret.secret_id
+  secret_id = "LLM_API_KEY"
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.rag_api_sa.email}"
 }

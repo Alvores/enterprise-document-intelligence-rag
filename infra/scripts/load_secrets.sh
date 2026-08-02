@@ -3,19 +3,34 @@
 set -e 
 
 PROJECT_ID="enterprise-rag-2026"
-SECRET_NAME="RAG_API_KEY"
 
 echo -e "\n=== Secret Manager Uploader ==="
-echo "Enter the API Key you want to secure for the RAG API:"
-# -s hides the input from the terminal screen
-read -s API_KEY
+echo "Reading keys from .env file..."
 
-if [ -z "$API_KEY" ]; then
-    echo "Error: API Key cannot be empty."
+# Dynamically resolve the path to the .env file at the project root
+# (dirname "$0" is infra/scripts -> ../.. goes up to the project root)
+ENV_PATH="$(dirname "$0")/../../.env"
+
+if [ ! -f "$ENV_PATH" ]; then
+    echo "Error: .env file not found at $ENV_PATH"
     exit 1
 fi
 
-# Pipes the key directly into GCP Secret Manager
-echo -n "$API_KEY" | gcloud secrets versions add $SECRET_NAME --data-file=- --project=$PROJECT_ID
+# Automatically export variables from your local .env file
+set -a
+source "$ENV_PATH"
+set +a
 
-echo -e "\n[SUCCESS] Secret $SECRET_NAME successfully pushed to Google Cloud."
+# Validate that the keys actually exist in the .env file
+if [ -z "$API_KEY" ] || [ -z "$LLM_API_KEY" ]; then
+    echo "Error: API_KEY or LLM_API_KEY is missing from your .env file."
+    exit 1
+fi
+
+echo "Pushing API_KEY to RAG_API_KEY in Secret Manager..."
+echo -n "$API_KEY" | gcloud secrets versions add RAG_API_KEY --data-file=- --project=$PROJECT_ID
+
+echo "Pushing LLM_API_KEY to LLM_API_KEY in Secret Manager..."
+echo -n "$LLM_API_KEY" | gcloud secrets versions add LLM_API_KEY --data-file=- --project=$PROJECT_ID
+
+echo -e "\n[SUCCESS] Secrets successfully pushed to Google Cloud."
