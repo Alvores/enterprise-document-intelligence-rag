@@ -4,6 +4,7 @@ gcloud storage buckets update gs://enterprise-rag-2026-tf-state --versioning
 
 ## Create Artifact Registry
 gcloud artifacts repositories create rag-platform-repo \
+  --project="enterprise-rag-2026" \
   --repository-format=docker \
   --location=us-central1 \
   --description="Secure private container registry"
@@ -11,6 +12,8 @@ gcloud artifacts repositories create rag-platform-repo \
 ## Enable IAM Credentials API
 gcloud services enable iamcredentials.googleapis.com
 gcloud services enable cloudresourcemanager.googleapis.com
+gcloud services enable cloudbilling.googleapis.com
+gcloud services enable billingbudgets.googleapis.com
 
 ## Create Workload Identity Pool
 gcloud iam workload-identity-pools create github-actions-pool \
@@ -33,6 +36,22 @@ gcloud iam service-accounts create tf-runner \
   --project="enterprise-rag-2026" \
   --display-name="Terraform CI/CD Runner"
 
+## Create Docker Publisher Service Account
+gcloud iam service-accounts create docker-publisher \
+  --project="enterprise-rag-2026" \
+  --display-name="Docker CI/CD Publisher"
+
+# Grant ONLY Artifact Registry Writer
+gcloud projects add-iam-policy-binding enterprise-rag-2026 \
+  --member="serviceAccount:docker-publisher@enterprise-rag-2026.iam.gserviceaccount.com" \
+  --role="roles/artifactregistry.writer"
+
+# Bind to the Workload Identity Pool
+gcloud iam service-accounts add-iam-policy-binding docker-publisher@enterprise-rag-2026.iam.gserviceaccount.com \
+  --project="enterprise-rag-2026" \
+  --role="roles/iam.workloadIdentityUser" \
+  --member="principalSet://iam.googleapis.com/projects/<YOUR_PROJECT_NUMBER>/locations/global/workloadIdentityPools/github-actions-pool/attribute.repository/<YOUR_GITHUB_USERNAME>/enterprise-document-intelligence-rag"
+
 ## Grant Terraform Necessary Permissions
 # Manage APIs and Quotas
 gcloud projects add-iam-policy-binding enterprise-rag-2026 \
@@ -54,7 +73,22 @@ gcloud projects add-iam-policy-binding enterprise-rag-2026 \
   --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
   --role="roles/compute.admin"
 
-# Manage IAM (Terraform needs this to assign runtime roles to Cloud Run)
+# Manage Cloud Run Services explicitly
+gcloud projects add-iam-policy-binding enterprise-rag-2026 \
+  --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
+  --role="roles/run.admin"
+
+# Manage Service Accounts (reading/modifying runtime identities)
+gcloud projects add-iam-policy-binding enterprise-rag-2026 \
+  --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
+  --role="roles/iam.serviceAccountAdmin"
+
+# Manage Security Policies & IAM Bindings (attaching accessor roles to Secret Manager)
+gcloud projects add-iam-policy-binding enterprise-rag-2026 \
+  --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
+  --role="roles/iam.securityAdmin"
+
+# Manage Project IAM Policies
 gcloud projects add-iam-policy-binding enterprise-rag-2026 \
   --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
   --role="roles/resourcemanager.projectIamAdmin"
@@ -82,9 +116,15 @@ gcloud iam service-accounts add-iam-policy-binding tf-runner@enterprise-rag-2026
   --role="roles/iam.workloadIdentityUser" \
   --member="principalSet://iam.googleapis.com/projects/<YOUR_PROJECT_NUMBER>/locations/global/workloadIdentityPools/github-actions-pool/attribute.repository/<YOUR_GITHUB_USERNAME>/enterprise-document-intelligence-rag"
 
-## Break the Terraform Dependency Loop
-# Provisions APIs and the empty Secret Manager vault first so the secrets loader can run
-cd "$(dirname "$0")/../terraform"
-terraform apply -target="google_project_service.enabled_apis" -target="google_secret_manager_secret.api_key_secret" -auto-approve
-cd ../..
+## Create a $5/month safety budget
+gcloud beta billing budgets create \
+  --billing-account="<YOUR_BILLING_ACCOUNT_ID>" \
+  --display-name="RAG Project Budget" \
+  --budget-amount=8.00USD \
+  --threshold-rule=percent=0.5 \
+  --threshold-rule=percent=0.9 \
+  --threshold-rule=percent=1.0
 
+## Create Permanent Secret Vaults
+gcloud secrets create RAG_API_KEY --replication-policy="automatic" --project="enterprise-rag-2026" || true
+gcloud secrets create LLM_API_KEY --replication-policy="automatic" --project="enterprise-rag-2026" || true

@@ -43,16 +43,16 @@ resource "google_cloud_run_v2_service" "rag_api_service" {
         name = "API_KEY"
         value_source {
           secret_key_ref {
-            secret  = google_secret_manager_secret.api_key_secret.secret_id
+            secret  = "RAG_API_KEY"
             version = "latest"
           }
         }
       }
 
-      # Add the embedding model directly as a plaintext environment variable
+      # Point directly to the baked local directory path
       env {
         name  = "EMBEDDING_MODEL"
-        value = "BAAI/bge-small-en-v1.5"
+        value = "/app/models/bge-small-en-v1.5"
       }
 
       # LLM to use for RAG retrieval
@@ -65,7 +65,7 @@ resource "google_cloud_run_v2_service" "rag_api_service" {
         name = "GEMINI_API_KEY"
         value_source {
           secret_key_ref {
-            secret  = google_secret_manager_secret.llm_api_key_secret.secret_id
+            secret  = "LLM_API_KEY"
             version = "latest"
           }
         }

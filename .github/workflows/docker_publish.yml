@@ -32,7 +32,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: "projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider"
-          service_account: "tf-runner@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com"
+          service_account: "docker-publisher@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

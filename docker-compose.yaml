@@ -33,7 +33,7 @@ services:
       # Use host.docker.internal to bridge to Ollama running on your Windows host
       - OLLAMA_HOST=http://host.docker.internal:11434
       - LLM_MODEL=qwen3:8b
-      - EMBEDDING_MODEL=BAAI/bge-small-en-v1.5
+      - EMBEDDING_MODEL=/app/models/bge-small-en-v1.5
     extra_hosts:
       # Bulletproof resolution for host.docker.internal inside Linux containers
       - "host.docker.internal:host-gateway"
