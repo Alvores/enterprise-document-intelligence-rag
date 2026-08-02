@@ -73,7 +73,22 @@ gcloud projects add-iam-policy-binding enterprise-rag-2026 \
   --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
   --role="roles/compute.admin"
 
-# Manage IAM (Terraform needs this to assign runtime roles to Cloud Run)
+# Manage Cloud Run Services explicitly
+gcloud projects add-iam-policy-binding enterprise-rag-2026 \
+  --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
+  --role="roles/run.admin"
+
+# Manage Service Accounts (reading/modifying runtime identities)
+gcloud projects add-iam-policy-binding enterprise-rag-2026 \
+  --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
+  --role="roles/iam.serviceAccountAdmin"
+
+# Manage Security Policies & IAM Bindings (attaching accessor roles to Secret Manager)
+gcloud projects add-iam-policy-binding enterprise-rag-2026 \
+  --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
+  --role="roles/iam.securityAdmin"
+
+# Manage Project IAM Policies
 gcloud projects add-iam-policy-binding enterprise-rag-2026 \
   --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
   --role="roles/resourcemanager.projectIamAdmin"
