@@ -39,8 +39,33 @@
 - [x] Implement LLM Factory for environment switching (Gemini 3.6 Flash for cloud)
 - [x] Implement GitHub Actions CI/CD (PR validation, auto-publish, manual infra control)
 
-## Phase 6: Frontend (Week 6)
+## v0.2.0 Expansion
+
+### Phase 6: Evaluation & Tracing (ADR-014)
+- [ ] Replace binary LLM judge with continuous Ragas RAG Triad scoring
+- [ ] Expand golden dataset to 40+ synthetic questions
+- [ ] Instrument pipeline spans with Arize Phoenix (OpenTelemetry)
+- [ ] Establish retrieval/generation baseline for ablation gates
+
+### Phase 7: Async Ingestion & Two-Stage Retrieval (ADR-015, ADR-016)
+- [ ] Stage uploads in GCS and return `202 Accepted`
+- [ ] Add Pub/Sub push worker with DLQ and `PENDING → READY/FAILED` state tracking
+- [ ] Replace flat chunking with `SentenceWindowNodeParser`
+- [ ] Add cross-encoder reranking (Top-25 → Top-5)
+
+### Phase 8: Post-Training (ADR-017, ADR-018)
+- [ ] Create isolated `training/` CUDA workspace
+- [ ] Curate RAG SFT dataset with relevant + distractor chunks
+- [ ] Run QLoRA SFT for citation formatting and distractor filtering
+- [ ] Run DPO alignment for grounded refusals and hallucination reduction
+
+### Phase 9: High-Throughput Serving (ADR-019)
+- [ ] Deploy vLLM with PagedAttention and automatic prefix caching
+- [ ] Extend `LLMService` to route to the vLLM endpoint
+- [ ] Load the DPO LoRA adapter dynamically
+
+### Phase 10: React SPA & SSE Frontend (ADR-020)
 - [ ] React SPA
 - [ ] PDF upload UI
-- [ ] Chat interface
+- [ ] Chat interface with SSE token streaming and citation delivery
 - [ ] Deployment

@@ -217,7 +217,6 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 .env
-.env
 
 # Local Data
 data/*
@@ -236,3 +235,6 @@ override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+
+# other
+plan.txt

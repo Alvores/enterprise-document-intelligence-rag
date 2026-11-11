@@ -1,0 +1,49 @@
+# =========================================================
+# AI Agent Exclusions (.kilocodeignore and .ignore)
+# =========================================================
+
+# 1. Dependency Lockfiles
+# These are tracked in Git for reproducibility, but are thousands 
+# of lines of dense JSON/TOML that will instantly drain your token budget.
+uv.lock
+poetry.lock
+Pipfile.lock
+package-lock.json
+pnpm-lock.yaml
+
+# 2. Jupyter Notebooks
+# Tracked notebooks are saved as raw JSON containing verbose metadata 
+# and base64-encoded images. Use Marimo or .py scripts for AI coding.
+*.ipynb
+
+# 3. Tracked Data & Configuration
+# Prevents the AI from trying to read sample datasets or heavy configs
+*.csv
+*.tsv
+*.jsonl
+*.parquet
+*.arrow
+*.h5
+*.db
+*.sqlite
+*.sqlite3
+
+# 4. Model Weights
+*.pt
+*.pth
+*.onnx
+*.safetensors
+*.bin
+*.ckpt
+
+# 5. Tracked Media & Assets
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.ico
+*.mp4
+*.wav
+
+# 6. Specific Overrides from .gitignore
+data/attention_is_all_you_need.pdf
