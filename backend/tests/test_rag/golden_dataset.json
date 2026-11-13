@@ -1,0 +1,102 @@
+[
+  {
+    "question_type": "synthesis",
+    "question": "What is the primary advantage of using sinusoidal positional encodings over learned positional embeddings according to the text?",
+    "ground_truth": "It may allow the model to extrapolate to sequence lengths longer than the ones encountered during training."
+  },
+  {
+    "question_type": "factual",
+    "question": "In which layer of the model is the attention mechanism described in Figure 3 located?",
+    "ground_truth": "layer 5"
+  },
+  {
+    "question_type": "factual",
+    "question": "How many parallel attention layers, or heads, does the model employ?",
+    "ground_truth": "8"
+  },
+  {
+    "question_type": "factual",
+    "question": "What is the formula for the Feed-Forward Network (FFN) in the model?",
+    "ground_truth": "FFN(x) = max(0, xW1 + b1)W2 + b2"
+  },
+  {
+    "question_type": "factual",
+    "question": "What is the computational complexity of separable convolutions as described in the text?",
+    "ground_truth": "O(k · n · d + n · d²)"
+  },
+  {
+    "question_type": "factual",
+    "question": "Who are the authors of the paper titled 'Long short-term memory'?",
+    "ground_truth": "Sepp Hochreiter and Jürgen Schmidhuber."
+  },
+  {
+    "question_type": "factual",
+    "question": "What is the main argument presented in the text?",
+    "ground_truth": "The Law will never be perfect, but its application should be just - this is what we are missing, in my opinion."
+  },
+  {
+    "question_type": "synthesis",
+    "question": "Why is the scaling factor of 1/√dk used in Scaled Dot-Product Attention?",
+    "ground_truth": "To counteract the effect of large dot products growing in magnitude for larger values of dk, which pushes the softmax function into regions where it has extremely small gradients."
+  },
+  {
+    "question_type": "factual",
+    "question": "How many identical layers does the encoder consist of?",
+    "ground_truth": "6"
+  },
+  {
+    "question_type": "factual",
+    "question": "Who are the authors of the paper titled 'Effective approaches to attention-based neural machine translation'?",
+    "ground_truth": "Minh-Thang Luong, Hieu Pham, and Christopher D Manning."
+  },
+  {
+    "question_type": "factual",
+    "question": "What is the value of label smoothing used during training?",
+    "ground_truth": "0.1"
+  },
+  {
+    "question_type": "factual",
+    "question": "In which year was the paper 'Neural machine translation in linear time' published?",
+    "ground_truth": "2017"
+  },
+  {
+    "question_type": "factual",
+    "question": "Under what condition are self-attention layers faster than recurrent layers in terms of computational complexity?",
+    "ground_truth": "When the sequence length n is smaller than the representation dimensionality d."
+  },
+  {
+    "question_type": "factual",
+    "question": "What beam size and α value were used in both WSJ only and the semi-supervised setting?",
+    "ground_truth": "beam size of 21 and α = 0.3"
+  },
+  {
+    "question_type": "factual",
+    "question": "What is the value of warmup_steps used in the training process?",
+    "ground_truth": "4000"
+  },
+  {
+    "question_type": "factual",
+    "question": "What beam size was used for both WSJ only and the semi-supervised setting?",
+    "ground_truth": "21"
+  },
+  {
+    "question_type": "factual",
+    "question": "In which year was the paper 'Grammar as a foreign language' published?",
+    "ground_truth": "2015"
+  },
+  {
+    "question_type": "factual",
+    "question": "What is the BLEU score of the Transformer (base model)?",
+    "ground_truth": "27.3"
+  },
+  {
+    "question_type": "factual",
+    "question": "What is the PPL value for model (A)?",
+    "ground_truth": "4.92"
+  },
+  {
+    "question_type": "factual",
+    "question": "What are the estimated TFLOPS values for the K80, K40, M40, and P100 GPUs as specified in the text?",
+    "ground_truth": "2.8, 3.7, 6.0 and 9.5 TFLOPS"
+  }
+]

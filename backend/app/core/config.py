@@ -54,5 +54,11 @@ class Settings:
     # File Upload Constraints
     MAX_FILE_SIZE_BYTES: int = int(os.getenv("MAX_FILE_SIZE_BYTES", str(50 * 1024 * 1024)))  # 50MB
 
+    # Telemetry (Arize Phoenix / OpenTelemetry)
+    ENABLE_TELEMETRY: bool = os.getenv("ENABLE_TELEMETRY", "true").lower() in ("true", "1", "yes")
+    PHOENIX_COLLECTOR_ENDPOINT: str = os.getenv(
+        "PHOENIX_COLLECTOR_ENDPOINT", "http://localhost:6006/v1/traces"
+    )
+
 
 settings = Settings()

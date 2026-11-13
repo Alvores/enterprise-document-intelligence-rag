@@ -23,7 +23,7 @@ class LLMService:
             if gemini_key:
                 logger.info("Initializing Gemini Generative Model for Cloud Runtime...")
                 self._llm = Gemini(
-                    model="models/gemini-3.6-flash",
+                    model="models/gemini-3.8-flash",
                     api_key=gemini_key,
                     temperature=self.temperature,
                 )
@@ -36,7 +36,7 @@ class LLMService:
                     model=self.model_name,
                     base_url=settings.OLLAMA_HOST,
                     temperature=self.temperature,
-                    request_timeout=120.0,
+                    request_timeout=300.0,
                 )
         return self._llm
 

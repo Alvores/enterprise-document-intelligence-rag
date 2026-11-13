@@ -6,5 +6,6 @@ from backend.app.main import app
 
 @pytest.fixture
 def client():
-    """Provides a reusable FastAPI TestClient for all tests."""
-    return TestClient(app)
+    """Provides a reusable FastAPI TestClient with lifespan startup/shutdown."""
+    with TestClient(app) as c:
+        yield c

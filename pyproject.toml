@@ -32,6 +32,12 @@ dependencies = [
     # Logging
     "python-json-logger>=3.3,<4.0",
     "llama-index-llms-gemini>=0.6.2",
+    "openinference-instrumentation-llama-index>=4.7.3",
+    "arize-phoenix-otel>=0.17.3",
+    "ragas>=0.2.0",
+    "langchain-community<0.3.0",
+    "langchain-core<0.3.0",
+    "pyarrow<26",
 ]
 
 [dependency-groups]

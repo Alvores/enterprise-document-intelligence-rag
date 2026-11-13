@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.app.api import documents, health, queries
 from backend.app.core.config import settings
 from backend.app.core.logging import logger
+from backend.app.core.telemetry import setup_telemetry
 from backend.app.db.connection import db_manager
 
 
@@ -14,6 +15,7 @@ from backend.app.db.connection import db_manager
 async def lifespan(app: FastAPI):
     # Startup logic
     logger.info("Starting up microservice...")
+    setup_telemetry()
     db_manager.initialize_pool()
     yield
     # Shutdown logic
