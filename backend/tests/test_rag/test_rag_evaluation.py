@@ -7,6 +7,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 from datasets import Dataset
+from fastapi.testclient import TestClient
 from ragas import RunConfig, evaluate
 from ragas.embeddings import LlamaIndexEmbeddingsWrapper
 from ragas.llms import LlamaIndexLLMWrapper
@@ -18,12 +19,20 @@ from ragas.metrics import (
 )
 
 from backend.app.core.config import settings
+from backend.app.main import app
 from backend.app.rag.retrieval import retrieval_service
 from backend.app.services.llm_factory import llm_service
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 GOLDEN_DATASET_PATH = Path(__file__).resolve().parent / "golden_dataset.json"
 BENCHMARKS_DIR = REPO_ROOT / "docs" / "benchmarks"
+
+
+@pytest.fixture
+def live_client():
+    """Provides a TestClient with lifespan hooks enabled for live DB and Phoenix telemetry."""
+    with TestClient(app) as c:
+        yield c
 
 
 def load_golden_dataset(filepath: str) -> list[dict]:
@@ -122,7 +131,7 @@ def export_ablation_report(evaluation_results: dict, filename: str = "gate_0_bas
     find_spec("ragas") is None,
     reason="Ragas eval dependencies are not installed.",
 )
-def test_ragas_triad_metrics(client):
+def test_ragas_triad_metrics(live_client):
     """Runs the golden dataset through /query and collects records for Ragas scoring."""
     golden_dataset = load_golden_dataset(str(GOLDEN_DATASET_PATH))
     headers = {"X-API-Key": settings.API_KEY}
@@ -130,7 +139,7 @@ def test_ragas_triad_metrics(client):
     # Ensure the evaluation document is present before querying.
     pdf_path = REPO_ROOT / "data" / "attention_is_all_you_need.pdf"
     with open(pdf_path, "rb") as f:
-        upload_response = client.post(
+        upload_response = live_client.post(
             "/documents/upload",
             files={"file": ("attention_is_all_you_need.pdf", f, "application/pdf")},
             headers=headers,
@@ -140,7 +149,7 @@ def test_ragas_triad_metrics(client):
 
     records = []
     for item in golden_dataset:
-        response = client.post("/query", json={"query": item["question"]}, headers=headers)
+        response = live_client.post("/query", json={"query": item["question"]}, headers=headers)
         assert response.status_code == 200, f"API failed on question: {item['question']}"
 
         payload = response.json()

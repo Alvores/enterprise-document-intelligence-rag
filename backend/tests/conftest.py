@@ -6,6 +6,5 @@ from backend.app.main import app
 
 @pytest.fixture
 def client():
-    """Provides a reusable FastAPI TestClient with lifespan startup/shutdown."""
-    with TestClient(app) as c:
-        yield c
+    """Provides a reusable FastAPI TestClient without triggering live DB lifespan hooks."""
+    return TestClient(app)
