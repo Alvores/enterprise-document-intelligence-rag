@@ -19,6 +19,19 @@ services:
       timeout: 5s
       retries: 5
 
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    container_name: rag-phoenix
+    restart: unless-stopped
+    ports:
+      - "6006:6006" # Phoenix UI and OTLP HTTP collector (/v1/traces)
+      - "4317:4317" # OTLP gRPC collector
+    environment:
+      # Persist traces/projects so they survive container restarts
+      - PHOENIX_WORKING_DIR=/mnt/phoenix
+    volumes:
+      - phoenixdata:/mnt/phoenix
+
   api:
     build:
       context: .
@@ -34,12 +47,17 @@ services:
       - OLLAMA_HOST=http://host.docker.internal:11434
       - LLM_MODEL=qwen3:8b
       - EMBEDDING_MODEL=/app/models/bge-small-en-v1.5
+      # Send OTLP spans to the Phoenix container over the compose network
+      - PHOENIX_COLLECTOR_ENDPOINT=http://phoenix:6006/v1/traces
     extra_hosts:
       # Bulletproof resolution for host.docker.internal inside Linux containers
       - "host.docker.internal:host-gateway"
     depends_on:
       db:
         condition: service_healthy # Wait for the DB to be fully healthy before starting the API
+      phoenix:
+        condition: service_started
 
 volumes:
   pgdata:
+  phoenixdata:

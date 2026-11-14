@@ -37,6 +37,13 @@ class RetrievalService:
         self.embed_tokenizer = AutoTokenizer.from_pretrained(settings.EMBEDDING_TOKENIZER_ID)
         self.llm_tokenizer = AutoTokenizer.from_pretrained(settings.LLM_TOKENIZER_ID)
 
+        # Create persistent token counters and bind CallbackManager once
+        self.embed_counter = TokenCountingHandler(tokenizer=self.embed_tokenizer.encode)
+        self.llm_counter = TokenCountingHandler(tokenizer=self.llm_tokenizer.encode)
+        self.callback_manager = CallbackManager([self.embed_counter, self.llm_counter])
+        LlamaIndexSettings.callback_manager = self.callback_manager
+        self.embed_model.callback_manager = self.callback_manager
+
         self._index = None
         self._query_engine = None
 
@@ -94,10 +101,10 @@ class RetrievalService:
         """Executes a RAG query and extracts citations."""
         logger.info("Executing RAG query", extra={"query": user_question})
 
-        # Set up exact token counters for this specific request
-        embed_counter = TokenCountingHandler(tokenizer=self.embed_tokenizer.encode)
-        llm_counter = TokenCountingHandler(tokenizer=self.llm_tokenizer.encode)
-        LlamaIndexSettings.callback_manager = CallbackManager([embed_counter, llm_counter])
+        # Ensure callback manager is active
+        LlamaIndexSettings.callback_manager = self.callback_manager
+        self.llm_counter.reset_counts()
+        self.embed_counter.reset_counts()
 
         try:
             # 1. Run the query through the engine
@@ -119,10 +126,10 @@ class RetrievalService:
             logger.info(
                 "Exact LLM Telemetry Captured",
                 extra={
-                    "prompt_tokens": llm_counter.prompt_llm_token_count,
-                    "completion_tokens": llm_counter.completion_llm_token_count,
-                    "total_llm_tokens": llm_counter.total_llm_token_count,
-                    "embedding_tokens": embed_counter.total_embedding_token_count,
+                    "prompt_tokens": self.llm_counter.prompt_llm_token_count,
+                    "completion_tokens": self.llm_counter.completion_llm_token_count,
+                    "total_llm_tokens": self.llm_counter.total_llm_token_count,
+                    "embedding_tokens": self.embed_counter.total_embedding_token_count,
                 },
             )
             logger.info("Query successful", extra={"citations_retrieved": len(citations)})
