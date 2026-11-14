@@ -42,10 +42,10 @@
 ## v0.2.0 Expansion
 
 ### Phase 6: Evaluation & Tracing (ADR-014)
-- [ ] Replace binary LLM judge with continuous Ragas RAG Triad scoring
-- [ ] Expand golden dataset to 40+ synthetic questions
-- [ ] Instrument pipeline spans with Arize Phoenix (OpenTelemetry)
-- [ ] Establish retrieval/generation baseline for ablation gates
+- [X] Replace binary LLM judge with continuous Ragas RAG Triad scoring
+- [X] Expand golden dataset to 40+ synthetic questions
+- [X] Instrument pipeline spans with Arize Phoenix (OpenTelemetry)
+- [X] Establish retrieval/generation baseline for ablation gates
 
 ### Phase 7: Async Ingestion & Two-Stage Retrieval (ADR-015, ADR-016)
 - [ ] Stage uploads in GCS and return `202 Accepted`
