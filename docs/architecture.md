@@ -33,7 +33,7 @@ Query → Hybrid Search (Top-25) → Window Expansion + Cross-Encoder Rerank (To
 - ✅ **Phase 3 (Retrieval):** Vector query, hybrid search (BM25), LLM synthesis
 - ✅ **Phase 4 (Production Readiness):** Golden dataset testing, exact LLMOps telemetry, API Key security, Docker containerization 
 - ✅ **Phase 5 (Cloud Deployment):** Serverless architecture via GCP Cloud Run, Private Cloud SQL, and Terraform IaC
-- ⏳ **v0.2.0 Phase 6 (Evaluation & Tracing):** Ragas RAG Triad metrics, expanded golden dataset, Arize Phoenix spans
+- ✅ **v0.2.0 Phase 6 (Evaluation & Tracing):** Ragas RAG Triad metrics, expanded golden dataset, Arize Phoenix spans
 - ⏳ **v0.2.0 Phase 7 (Async Ingestion & Reranking):** GCS + Pub/Sub ingestion, sentence-window parsing, cross-encoder reranking
 - ⏳ **v0.2.0 Phase 8 (Post-Training):** Isolated CUDA workspace, QLoRA SFT, DPO alignment
 - ⏳ **v0.2.0 Phase 9 (Serving):** vLLM with PagedAttention and automatic prefix caching
