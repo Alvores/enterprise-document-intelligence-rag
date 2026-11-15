@@ -42,7 +42,6 @@ class RetrievalService:
         self.callback_manager = CallbackManager([self.embed_counter, self.llm_counter])
         LlamaIndexSettings.callback_manager = self.callback_manager
         self.embed_model.callback_manager = self.callback_manager
-        LlamaIndexSettings.llm = llm_service.llm
 
         self._index = None
         self._query_engine = None
@@ -103,6 +102,7 @@ class RetrievalService:
                 retriever=retriever,
                 node_postprocessors=postprocessors,
                 response_synthesizer=synthesizer,
+                llm=llm_service.llm,
             )
 
             # 3. Inject our strict Enterprise System Prompt
