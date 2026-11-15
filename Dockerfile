@@ -1,8 +1,8 @@
 # Use a lightweight Python 3.12 base image
 FROM python:3.12-slim
 
-# Copy the uv binary directly from the official image for blazing-fast installs
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+# Copy the uv binary directly from the official image
+COPY --from=ghcr.io/astral-sh/uv:0.13.8 /uv /uvx /bin/
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -17,7 +17,12 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project
 
 # Download model files directly into a local folder inside /app
-RUN uv run --no-sync python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='BAAI/bge-small-en-v1.5', local_dir='/app/models/bge-small-en-v1.5')"
+RUN uv run --no-sync python -c "from huggingface_hub import snapshot_download; \
+    snapshot_download(repo_id='BAAI/bge-small-en-v1.5', local_dir='/app/models/bge-small-en-v1.5')"
+
+RUN uv run --no-sync python -c "from huggingface_hub import snapshot_download; \
+    snapshot_download(repo_id='BAAI/bge-reranker-base', local_dir='/app/models/bge-reranker-base')
+
 
 # Copy the rest of the application code
 COPY ./backend ./backend

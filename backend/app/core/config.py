@@ -46,6 +46,12 @@ class Settings:
     CHUNK_SIZE: int = int(os.getenv("CHUNK_SIZE", "512"))
     CHUNK_OVERLAP: int = int(os.getenv("CHUNK_OVERLAP", "50"))
 
+    # Ranking and Retrieval
+    RERANK_TOP_N: int = int(os.getenv("RERANK_TOP_N", "5"))
+    SENTENCE_WINDOW_SIZE: int = int(os.getenv("SENTENCE_WINDOW_SIZE", "3"))
+    RERANKER_MODEL: str = os.getenv("RERANKER_MODEL", "BAAI/bge-reranker-base")
+    TOP_K_RETRIEVAL: int = int(os.getenv("TOP_K_RETRIEVAL", "25"))
+
     # Generation LLM Configuration
     LLM_MODEL: str = os.getenv("LLM_MODEL", "qwen3:8b")
     LLM_TOKENIZER_ID: str = os.getenv("LLM_TOKENIZER_ID", "Qwen/Qwen3-8B")

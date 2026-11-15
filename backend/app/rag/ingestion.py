@@ -8,7 +8,7 @@ from llama_index.core import Document as LlamaDocument
 from llama_index.core import Settings as LlamaIndexSettings
 from llama_index.core.callbacks import CallbackManager, TokenCountingHandler
 from llama_index.core.ingestion import IngestionPipeline
-from llama_index.core.node_parser import SentenceSplitter
+from llama_index.core.node_parser import SentenceWindowNodeParser
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.vector_stores.postgres import PGVectorStore
 from transformers import AutoTokenizer
@@ -34,8 +34,10 @@ class IngestionService:
         # Configure chunking strategy
         self.pipeline = IngestionPipeline(
             transformations=[
-                SentenceSplitter(
-                    chunk_size=settings.CHUNK_SIZE, chunk_overlap=settings.CHUNK_OVERLAP
+                SentenceWindowNodeParser.from_defaults(
+                    window_size=settings.SENTENCE_WINDOW_SIZE,
+                    window_metadata_key="window",
+                    original_text_metadata_key="original_text",
                 ),
                 self.embed_model,
             ]
