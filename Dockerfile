@@ -21,7 +21,7 @@ RUN uv run --no-sync python -c "from huggingface_hub import snapshot_download; \
     snapshot_download(repo_id='BAAI/bge-small-en-v1.5', local_dir='/app/models/bge-small-en-v1.5')"
 
 RUN uv run --no-sync python -c "from huggingface_hub import snapshot_download; \
-    snapshot_download(repo_id='BAAI/bge-reranker-base', local_dir='/app/models/bge-reranker-base')
+    snapshot_download(repo_id='BAAI/bge-reranker-base', local_dir='/app/models/bge-reranker-base')"
 
 
 # Copy the rest of the application code
