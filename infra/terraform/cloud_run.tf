@@ -55,10 +55,15 @@ resource "google_cloud_run_v2_service" "rag_api_service" {
         value = "/app/models/bge-small-en-v1.5"
       }
 
+      env {
+        name  = "RERANKER_MODEL"
+        value = "/app/models/bge-reranker-base"
+      }
+
       # LLM to use for RAG retrieval
       env {
         name  = "LLM_MODEL"
-        value = "gemini-3.6-flash"
+        value = "gemini-3.8-flash"
       }
 
       env {

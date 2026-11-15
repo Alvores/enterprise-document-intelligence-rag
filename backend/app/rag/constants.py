@@ -2,11 +2,6 @@
 Enterprise RAG Constants and Prompts
 """
 
-# --- Retrieval Tuning ---
-
-# How many chunks to retrieve from the database
-TOP_K_RETRIEVAL = 5
-
 # Hybrid Search Weights (Alpha)
 # 1.0 = Pure Vector Search, 0.0 = Pure Keyword Search
 # 0.7 leans slightly toward semantic meaning while preserving exact keyword matches.

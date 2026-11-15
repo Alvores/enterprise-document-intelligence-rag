@@ -1,9 +1,13 @@
 from typing import Any
 from urllib.parse import urlparse
 
-from llama_index.core import PromptTemplate, VectorStoreIndex
+from llama_index.core import PromptTemplate, VectorStoreIndex, get_response_synthesizer
 from llama_index.core import Settings as LlamaIndexSettings
 from llama_index.core.callbacks import CallbackManager, TokenCountingHandler
+from llama_index.core.postprocessor import (
+    MetadataReplacementPostProcessor,
+    SentenceTransformerRerank,
+)
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
@@ -12,12 +16,7 @@ from transformers import AutoTokenizer
 
 from backend.app.core.config import settings
 from backend.app.core.logging import logger
-from backend.app.rag.constants import (
-    HYBRID_VECTOR_WEIGHT,
-    RAG_REFINE_TEMPLATE,
-    RAG_SYSTEM_TEMPLATE,
-    TOP_K_RETRIEVAL,
-)
+from backend.app.rag.constants import HYBRID_VECTOR_WEIGHT, RAG_REFINE_TEMPLATE, RAG_SYSTEM_TEMPLATE
 from backend.app.services.llm_factory import llm_service
 
 
@@ -75,25 +74,46 @@ class RetrievalService:
             logger.info("Initializing RAG Query Engine...")
 
             # 1. Configure the Retriever (Fetch Top 5 chunks)
-            retriever = VectorIndexRetriever(index=self.index, similarity_top_k=TOP_K_RETRIEVAL)
-
-            # 2. Assemble the Engine with our local Ollama model
-            self._query_engine = RetrieverQueryEngine.from_args(
-                retriever=retriever,
-                llm=llm_service.llm,
+            retriever = VectorIndexRetriever(
+                index=self.index,
+                similarity_top_k=settings.TOP_K_RETRIEVAL,
                 vector_store_query_mode="hybrid",
                 alpha=HYBRID_VECTOR_WEIGHT,
             )
 
-            # 3. Inject our strict Enterprise System Prompt
-            qa_prompt = PromptTemplate(RAG_SYSTEM_TEMPLATE)
-            refine_prompt = PromptTemplate(RAG_REFINE_TEMPLATE)
-            self._query_engine.update_prompts(
-                {
-                    "response_synthesizer:text_qa_template": qa_prompt,
-                    "response_synthesizer:refine_template": refine_prompt,
-                }
+            # 2. Assemble the Engine with our local Ollama model and processors
+            postprocessors = [
+                MetadataReplacementPostProcessor(target_metadata_key="window"),
+                SentenceTransformerRerank(
+                    model=settings.RERANKER_MODEL,
+                    top_n=settings.RERANK_TOP_N,
+                    device="cpu",
+                ),
+            ]
+
+            synthesizer = get_response_synthesizer(
+                response_mode="compact",
+                text_qa_template=PromptTemplate(RAG_SYSTEM_TEMPLATE),
+                refine_template=PromptTemplate(RAG_REFINE_TEMPLATE),
+                llm=llm_service.llm,
             )
+
+            self._query_engine = RetrieverQueryEngine.from_args(
+                retriever=retriever,
+                node_postprocessors=postprocessors,
+                response_synthesizer=synthesizer,
+                llm=llm_service.llm,
+            )
+
+            # 3. Inject our strict Enterprise System Prompt
+            # qa_prompt = PromptTemplate(RAG_SYSTEM_TEMPLATE)
+            # refine_prompt = PromptTemplate(RAG_REFINE_TEMPLATE)
+            # self._query_engine.update_prompts(
+            #     {
+            #         "response_synthesizer:text_qa_template": qa_prompt,
+            #         "response_synthesizer:refine_template": refine_prompt,
+            #     }
+            # )
 
         return self._query_engine
 
