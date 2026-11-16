@@ -66,10 +66,13 @@ class Settings:
         "PHOENIX_COLLECTOR_ENDPOINT", "http://localhost:6006/v1/traces"
     )
 
-    # GCP
-    GCP_PROJECT_ID: str = os.getenv("GCP_PROJECT_ID", "enterprise-rag-2026")
-    GCS_BUCKET_NAME: str = os.getenv("GCS_BUCKET_NAME")
-    PUBSUB_TOPIC_ID: str = os.getenv("PUBSUB_TOPIC_ID")
+    # Async Ingestion (GCS & Cloud Pub/Sub)
+    GCP_PROJECT_ID: str = os.getenv("GCP_PROJECT_ID", "")
+    GCS_BUCKET_NAME: str = os.getenv("GCS_BUCKET_NAME", "")
+    PUBSUB_TOPIC_ID: str = os.getenv("PUBSUB_TOPIC_ID", "")
+    STORAGE_BACKEND: str = os.getenv("STORAGE_BACKEND", "")
+    LOCAL_STAGING_DIR: str = os.getenv("LOCAL_STAGING_DIR", "")
+    WORKER_OIDC_AUDIENCE: str = os.getenv("WORKER_OIDC_AUDIENCE", "")
 
 
 settings = Settings()
