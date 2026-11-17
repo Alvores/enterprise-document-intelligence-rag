@@ -26,8 +26,8 @@ class StorageQueue:
         if configured_backend:
             if configured_backend not in {"local", "gcp"}:
                 raise ValueError(
-                    f"Unsupported STORAGE_BACKEND={configured_backend!r}; expected \
-                        'local' or 'gcp'."
+                    f"Unsupported STORAGE_BACKEND={configured_backend!r}; expected "
+                    "'local' or 'gcp'."
                 )
             self.backend = configured_backend
         else:
