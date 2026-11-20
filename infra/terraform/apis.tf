@@ -9,6 +9,8 @@ resource "google_project_service" "enabled_apis" {
     "artifactregistry.googleapis.com",     # Artifact Registry
     "vpcaccess.googleapis.com",            # Serverless VPC Access
     "servicenetworking.googleapis.com",    # Private Service Connect (for Cloud SQL)
+    "storage.googleapis.com",              # Cloud Storage (GCS)
+    "pubsub.googleapis.com",               # Cloud Pub/Sub
     "iam.googleapis.com"                   # Identity & Access Management
   ])
 

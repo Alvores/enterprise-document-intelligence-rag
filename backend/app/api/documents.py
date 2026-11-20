@@ -54,6 +54,9 @@ async def upload_document(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail="Failed to process document.")
 
 
+_REQUIRED_EVENT_KEYS = {"document_id", "filename", "file_hash", "gcs_uri"}
+
+
 @router.post(
     "/documents/worker",
     response_model=DocumentUploadResponse,
@@ -77,6 +80,18 @@ async def process_document_worker(
     except (binascii.Error, UnicodeDecodeError, json.JSONDecodeError) as e:
         logger.error("Invalid Pub/Sub envelope payload", extra={"error": str(e)})
         raise HTTPException(status_code=400, detail="Malformed Pub/Sub message payload.")
+
+    if not isinstance(event_payload, dict) or not _REQUIRED_EVENT_KEYS.issubset(event_payload):
+        logger.error(
+            "Pub/Sub payload missing required keys",
+            extra={
+                "received_keys": list(event_payload) if isinstance(event_payload, dict) else None
+            },
+        )
+        raise HTTPException(
+            status_code=400,
+            detail="Pub/Sub payload must include document_id, filename, file_hash, and gcs_uri.",
+        )
 
     try:
         result = ingestion_service.process_document_event(event_payload)
