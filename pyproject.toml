@@ -38,6 +38,8 @@ dependencies = [
     "langchain-community<0.3.0",
     "langchain-core<0.3.0",
     "pyarrow<26",
+    "google-cloud-storage>=3.17.1",
+    "google-cloud-pubsub>=2.39.0",
 ]
 
 [dependency-groups]

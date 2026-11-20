@@ -144,8 +144,8 @@ def test_ragas_triad_metrics(live_client):
             files={"file": ("attention_is_all_you_need.pdf", f, "application/pdf")},
             headers=headers,
         )
-    # 201 means created, 200 means ok, 400/409 means duplicate
-    assert upload_response.status_code in (200, 201, 400, 409), "Failed to seed database"
+    # 202 means accepted, 201 means created, 200 means ok, 400/409 means duplicate
+    assert upload_response.status_code in (200, 201, 202, 400, 409), "Failed to seed database"
 
     records = []
     for item in golden_dataset:

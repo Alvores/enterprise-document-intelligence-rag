@@ -9,9 +9,10 @@ resource "google_cloud_run_v2_service" "rag_api_service" {
     google_service_networking_connection.private_vpc_connection,
     google_secret_manager_secret_version.db_url_version,
     google_secret_manager_secret_iam_member.db_secret_access,
-    google_secret_manager_secret_iam_member.api_key_access
+    google_secret_manager_secret_iam_member.api_key_access,
+    google_storage_bucket_iam_member.rag_api_staging_access,
+    google_pubsub_topic_iam_member.rag_api_publisher
   ]
-
   template {
     service_account = google_service_account.rag_api_sa.email
 
@@ -74,6 +75,31 @@ resource "google_cloud_run_v2_service" "rag_api_service" {
             version = "latest"
           }
         }
+      }
+
+      env {
+        name  = "GCP_PROJECT_ID"
+        value = var.project_id
+      }
+
+      env {
+        name  = "GCS_BUCKET_NAME"
+        value = google_storage_bucket.staging_bucket.name
+      }
+
+      env {
+        name  = "PUBSUB_TOPIC_ID"
+        value = google_pubsub_topic.ingestion_events.name
+      }
+
+      env {
+        name  = "STORAGE_BACKEND"
+        value = "gcp"
+      }
+
+      env {
+        name  = "WORKER_OIDC_AUDIENCE"
+        value = local.worker_oidc_audience
       }
 
     }

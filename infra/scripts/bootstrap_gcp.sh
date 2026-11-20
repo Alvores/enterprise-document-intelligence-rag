@@ -15,6 +15,12 @@ gcloud services enable cloudresourcemanager.googleapis.com
 gcloud services enable cloudbilling.googleapis.com
 gcloud services enable billingbudgets.googleapis.com
 
+## Enable Pub/Sub API and pre-materialize the Google-managed service agent
+# Terraform binds roles to service-<PROJECT_NUMBER>@gcp-sa-pubsub.iam.gserviceaccount.com,
+# so that identity must exist before the first terraform apply.
+gcloud services enable pubsub.googleapis.com --project="enterprise-rag-2026"
+gcloud beta services identity create --service=pubsub.googleapis.com --project="enterprise-rag-2026"
+
 ## Create Workload Identity Pool
 gcloud iam workload-identity-pools create github-actions-pool \
   --project="enterprise-rag-2026" \
@@ -107,6 +113,16 @@ gcloud projects add-iam-policy-binding enterprise-rag-2026 \
 gcloud projects add-iam-policy-binding enterprise-rag-2026 \
   --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
   --role="roles/artifactregistry.writer"
+
+# Manage Cloud Pub/Sub (topics/subscriptions for async ingestion)
+gcloud projects add-iam-policy-binding enterprise-rag-2026 \
+  --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
+  --role="roles/pubsub.admin"
+
+# Allow tf-runner to act as the runtime SA when configuring Pub/Sub OIDC push
+gcloud projects add-iam-policy-binding enterprise-rag-2026 \
+  --member="serviceAccount:tf-runner@enterprise-rag-2026.iam.gserviceaccount.com" \
+  --role="roles/iam.serviceAccountUser"
 
 ## Establish Trust Binding
 gcloud projects describe enterprise-rag-2026 --format="value(projectNumber)"
