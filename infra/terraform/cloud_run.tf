@@ -24,7 +24,7 @@ resource "google_cloud_run_v2_service" "rag_api_service" {
       resources {
         limits = {
           cpu    = "2"
-          memory = "2048Mi"
+          memory = "4096Mi"
         }
       }
 
@@ -64,7 +64,7 @@ resource "google_cloud_run_v2_service" "rag_api_service" {
       # LLM to use for RAG retrieval
       env {
         name  = "LLM_MODEL"
-        value = "gemini-3.8-flash"
+        value = "gemini-3.5-flash-lite"
       }
 
       env {
