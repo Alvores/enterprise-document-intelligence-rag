@@ -21,9 +21,17 @@ class LLMService:
             gemini_key = os.getenv("GEMINI_API_KEY")
 
             if gemini_key:
-                logger.info("Initializing Gemini Generative Model for Cloud Runtime...")
+                model_id = (
+                    self.model_name
+                    if self.model_name.startswith("models/")
+                    else f"models/{self.model_name}"
+                )
+                logger.info(
+                    "Initializing Gemini Generative Model for Cloud Runtime...",
+                    extra={"model": model_id},
+                )
                 self._llm = Gemini(
-                    model="models/gemini-3.8-flash",
+                    model=model_id,
                     api_key=gemini_key,
                     temperature=self.temperature,
                 )

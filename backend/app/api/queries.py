@@ -16,7 +16,7 @@ router = APIRouter(tags=["Query & Retrieval"])
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(verify_api_key)],
 )
-async def execute_query(request: QueryRequest):
+def execute_query(request: QueryRequest):
     start_time = time.time()
 
     try:

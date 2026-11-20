@@ -62,7 +62,7 @@ _REQUIRED_EVENT_KEYS = {"document_id", "filename", "file_hash", "gcs_uri"}
     response_model=DocumentUploadResponse,
     status_code=status.HTTP_200_OK,
 )
-async def process_document_worker(
+def process_document_worker(
     envelope: PubSubPushEnvelope,
     authorization: str | None = Header(default=None),
 ):
@@ -112,7 +112,7 @@ async def process_document_worker(
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(verify_api_key)],
 )
-async def get_document_status(document_id: str):
+def get_document_status(document_id: str):
     try:
         uuid.UUID(document_id)
     except ValueError:
