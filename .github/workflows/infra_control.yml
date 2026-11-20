@@ -16,6 +16,9 @@ env:
   GCP_PROJECT_ID: "enterprise-rag-2026"
   GCP_PROJECT_NUMBER: "221633325725"
   GCP_REGION: "us-central1"
+  REPO_NAME: "rag-platform-repo"
+  IMAGE_NAME: "rag-api"
+  CLOUD_RUN_SERVICE: "rag-platform-service"
 
 permissions:
   contents: read
@@ -51,3 +54,12 @@ jobs:
           elif [ "${{ github.event.inputs.action }}" = "destroy" ]; then
             terraform destroy -auto-approve -var="project_id=${{ env.GCP_PROJECT_ID }}" -var="region=${{ env.GCP_REGION }}"
           fi
+
+      - name: Deploy Latest Application Image to Cloud Run
+        if: github.event.inputs.action == 'apply'
+        run: |
+          gcloud run deploy "${{ env.CLOUD_RUN_SERVICE }}" \
+            --image "${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:latest" \
+            --region "${{ env.GCP_REGION }}" \
+            --project "${{ env.GCP_PROJECT_ID }}" \
+            --quiet
