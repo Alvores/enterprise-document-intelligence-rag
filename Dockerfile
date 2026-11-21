@@ -23,6 +23,9 @@ RUN uv run --no-sync python -c "from huggingface_hub import snapshot_download; \
 RUN uv run --no-sync python -c "from huggingface_hub import snapshot_download; \
     snapshot_download(repo_id='BAAI/bge-reranker-base', local_dir='/app/models/bge-reranker-base')"
 
+RUN uv run --no-sync python -c "from transformers import AutoTokenizer; \
+    AutoTokenizer.from_pretrained('Qwen/Qwen3-8B').save_pretrained('/app/models/qwen3-8b-tokenizer')"
+
 
 # Copy the rest of the application code
 COPY ./backend ./backend
