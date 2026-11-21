@@ -36,7 +36,7 @@
 - [x] Push Docker container to Google Artifact Registry
 - [x] Deploy API to Google Cloud Run (Serverless) with Direct VPC Egress
 - [x] Configure GCP Secret Manager for Database URLs and API Keys
-- [x] Implement LLM Factory for environment switching (Gemini 3.6 Flash for cloud)
+- [x] Implement LLM Factory for environment switching (env-configured Gemini model (default: gemini-3.5-flash-lite))
 - [x] Implement GitHub Actions CI/CD (PR validation, auto-publish, manual infra control)
 
 ## v0.2.0 Expansion
@@ -48,10 +48,11 @@
 - [X] Establish retrieval/generation baseline for ablation gates
 
 ### Phase 7: Async Ingestion & Two-Stage Retrieval (ADR-015, ADR-016)
-- [ ] Stage uploads in GCS and return `202 Accepted`
-- [ ] Add Pub/Sub push worker with DLQ and `PENDING → READY/FAILED` state tracking
-- [ ] Replace flat chunking with `SentenceWindowNodeParser`
-- [ ] Add cross-encoder reranking (Top-25 → Top-5)
+- [x] Stage uploads in GCS and return `202 Accepted`
+- [x] Add Pub/Sub push worker with DLQ and `PENDING → READY/FAILED` state tracking
+- [x] Replace flat chunking with `SentenceWindowNodeParser`
+- [x] Add cross-encoder reranking (Top-25 → Top-5)
+- [x] Cloud hardening: OIDC-authenticated worker endpoint, `GET /documents/{document_id}` polling, `4096Mi` Cloud Run memory + `startup_cpu_boost`, offline-baked models/tokenizers (`HF_HUB_OFFLINE=1`), Gate 1 Ragas benchmarking
 
 ### Phase 8: Post-Training (ADR-017, ADR-018)
 - [ ] Create isolated `training/` CUDA workspace
@@ -69,3 +70,8 @@
 - [ ] PDF upload UI
 - [ ] Chat interface with SSE token streaming and citation delivery
 - [ ] Deployment
+
+## Post-v0.2.0 Polish & Performance Backlog
+- [ ] Optimize CPU reranker latency on Cloud Run (`cpu = "4"`, tune `TOP_K_RETRIEVAL`, evaluate ONNX/MiniLM, deduplicate overlapping sentence windows)
+- [ ] Share a single `HuggingFaceEmbedding` singleton across `IngestionService` and `RetrievalService`
+- [ ] Migrate deprecated `llama-index-llms-gemini` to `llama-index-llms-google-genai`
