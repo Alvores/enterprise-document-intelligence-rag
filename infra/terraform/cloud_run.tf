@@ -22,6 +22,8 @@ resource "google_cloud_run_v2_service" "rag_api_service" {
       image = "us-docker.pkg.dev/cloudrun/container/hello"
 
       resources {
+        startup_cpu_boost = true
+
         limits = {
           cpu    = "2"
           memory = "4096Mi"
@@ -59,6 +61,31 @@ resource "google_cloud_run_v2_service" "rag_api_service" {
       env {
         name  = "RERANKER_MODEL"
         value = "/app/models/bge-reranker-base"
+      }
+
+      env {
+        name  = "EMBEDDING_TOKENIZER_ID"
+        value = "/app/models/bge-small-en-v1.5"
+      }
+
+      env {
+        name  = "LLM_TOKENIZER_ID"
+        value = "/app/models/qwen3-8b-tokenizer"
+      }
+
+      env {
+        name  = "HF_HUB_OFFLINE"
+        value = "1"
+      }
+
+      env {
+        name  = "TRANSFORMERS_OFFLINE"
+        value = "1"
+      }
+
+      env {
+        name  = "ENABLE_TELEMETRY"
+        value = "false"
       }
 
       # LLM to use for RAG retrieval
