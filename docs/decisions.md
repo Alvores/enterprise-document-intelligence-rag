@@ -77,7 +77,7 @@
 * **Date:** 2026-07-26
 * **Status:** Accepted
 * **Context:** Ollama runs locally but cannot run inside a standard serverless Cloud Run container.
-* **Decision:** Implement an LLMFactory that dynamically instantiates Ollama if running locally, or Gemini 3.6 Flash if a GEMINI_API_KEY (mapped from Secret Manager) is detected.
+* **Decision:** Implement an LLMFactory that dynamically instantiates Ollama if running locally, or an env-configured Gemini model (selected via `LLM_MODEL`, defaulting to `gemini-3.5-flash-lite` on Cloud Run) if a GEMINI_API_KEY (mapped from Secret Manager) is detected.
 * **Consequences:** Achieved parity between a $0 local dev environment and a high-availability, high-speed cloud runtime without modifying core retrieval logic.
 
 ## ADR-012: Zero-Trust Database Networking
@@ -92,7 +92,7 @@
 * **Status:** Accepted
 * **Context:** Needed automated deployment checks without losing manual control over infrastructure costs.
 * **Decision:** Split GitHub Actions into three distinct workflows: PR Validation (automated lint/test/plan), Docker Publish (automated build/push on merge), and Ops Infrastructure Control (manual workflow_dispatch for Terraform apply/destroy).
-* **Consequences:** Ensures code quality on every PR while preventing accidental automated scaling or unapproved cloud billing events.
+* **Consequences:** Ensures code quality on every PR while preventing accidental automated scaling or unapproved cloud billing events. The manual `Ops: Manual Infra Control` (`apply`) workflow now runs `terraform apply` followed by `gcloud run deploy :latest`, while `docker_publish.yml` remains build-and-push only.
 
 ## ADR-014: Quantitative RAG Triad Evaluation & OpenTelemetry Tracing
 * **Date:** 2026-11-10
@@ -108,7 +108,7 @@
 * **Context:** The synchronous `POST /documents/upload` endpoint performs PyMuPDF text parsing, chunking, and CPU-bound embedding generation within the client HTTP request lifecycle. Processing large multi-page enterprise documents blocks API worker threads, risks Cloud Run HTTP 504 gateway timeouts, and drops jobs if transient database connection drops occur.
 * **Decision:** Decouple document upload from document ingestion using **Google Cloud Storage (GCS)** staging and **Cloud Pub/Sub Push Subscriptions** with a Dead-Letter Queue (DLQ). The upload endpoint computes the SHA-256 digest (`ADR-007`), stages the binary to GCS, writes a `PENDING` record to PostgreSQL, publishes a message to Pub/Sub, and immediately returns `202 Accepted`. A dedicated push endpoint (`POST /documents/worker`) consumes the event, executes the ingestion pipeline, and updates document state to `READY` or `FAILED`.
 * **Alternatives:** FastAPI `BackgroundTasks` (unreliable under serverless scale-down because Cloud Run throttles CPU after request termination) or Celery + Redis (requires provisioning always-on infrastructure, violating serverless scale-to-zero objectives).
-* **Consequences:** Ensures sub-second client response times, offloads CPU-heavy extraction to managed background execution, enables automated exponential backoff retries with DLQ isolation, and guarantees idempotency through content-addressable SHA-256 digests.
+* **Consequences:** Ensures sub-second client response times, offloads CPU-heavy extraction to managed background execution, enables automated exponential backoff retries with DLQ isolation, and guarantees idempotency through content-addressable SHA-256 digests. The `POST /documents/worker` endpoint is protected by OIDC JWT validation (`WORKER_OIDC_AUDIENCE`), and synchronous (`def`) route handlers keep CPU-bound embeddings from blocking FastAPI's event loop.
 
 ## ADR-016: Two-Stage Retrieval with Sentence-Window Parsing & Cross-Encoder Reranking
 * **Date:** 2026-11-10
@@ -119,6 +119,7 @@
   2. Broaden initial hybrid retrieval to `similarity_top_k = 25`, expand surrounding context using `MetadataReplacementPostProcessor`, and execute a second-stage **Cross-Encoder Reranker** (`SentenceTransformerRerank` using `BAAI/bge-reranker-base`) to score joint query-document representations and prune candidates down to the Top-5 nodes.
 * **Alternatives:** Increasing top-k retrieval without reranking (pollutes the prompt with low-similarity distractors and induces token bloat).
 * **Consequences:** Substantially elevates Context Recall and Precision without overflowing the downstream generator's context window. Increases second-stage compute latency, which is compensated for by higher synthesis quality.
+* **Observed Outcome:** Gate 1 Ragas benchmarking recorded gains of +5.0% to +7.4% across all metrics (see `docs/benchmarks/gate_1_reranker.md`). Co-hosting both BGE models on CPU required a `4096Mi` Cloud Run memory allocation.
 
 ## ADR-017: Isolated CUDA Training Workspace vs. CPU-Only API Runtime
 * **Date:** 2026-11-10
@@ -153,3 +154,10 @@
 * **Decision:** Expose a `POST /query/stream` endpoint using FastAPI's `StreamingResponse` configured for **Server-Sent Events (`text/event-stream`)**. The stream transmits an initial `citations` event containing reranked source nodes immediately following retrieval, followed by incremental `token` text deltas, concluding with a `telemetry` event.
 * **Alternatives:** WebSockets (introduces stateful connection management, complicates horizontal autoscaling on serverless infrastructure, and introduces unnecessary bi-directional protocol overhead for what is strictly a server-to-client stream).
 * **Consequences:** Reduces perceived end-user latency to the initial Time-To-First-Token (<500ms) while keeping API endpoints stateless and fully compatible with Cloud Run load balancers and reverse proxies.
+
+## ADR-021: Offline-Baked Models & Tokenizers for Deterministic Cloud Run Cold Starts
+* **Date:** 2026-11-21
+* **Status:** Accepted
+* **Context:** Cloud Run cold starts triggered Hugging Face Hub network calls to resolve embedding/reranker models and tokenizers, and the OpenTelemetry stack attempted telemetry export to localhost, intermittently exceeding the 4-minute startup probe timeout.
+* **Decision:** Bake `BAAI/bge-small-en-v1.5`, `BAAI/bge-reranker-base`, and the `Qwen/Qwen3-8B` tokenizer into `/app/models/` during the Docker build. At runtime, set `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`, and `ENABLE_TELEMETRY=false`, and enable `startup_cpu_boost = true` on Cloud Run.
+* **Consequences:** Eliminates external model/tokenizer resolution and localhost telemetry attempts during cold starts, guaranteeing startup completes within the 4-minute probe window.
