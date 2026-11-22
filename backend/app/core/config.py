@@ -56,6 +56,11 @@ class Settings:
     LLM_MODEL: str = os.getenv("LLM_MODEL", "qwen3:8b")
     LLM_TOKENIZER_ID: str = os.getenv("LLM_TOKENIZER_ID", "Qwen/Qwen3-8B")
     LLM_TEMPERATURE: float = float(os.getenv("LLM_TEMPERATURE", "0.1"))
+    LLM_ENABLE_THINKING: bool = os.getenv("LLM_ENABLE_THINKING", "true").lower() in (
+        "true",
+        "1",
+        "yes",
+    )
 
     # File Upload Constraints
     MAX_FILE_SIZE_BYTES: int = int(os.getenv("MAX_FILE_SIZE_BYTES", str(50 * 1024 * 1024)))  # 50MB
