@@ -45,6 +45,7 @@ class LLMService:
                     base_url=settings.OLLAMA_HOST,
                     temperature=self.temperature,
                     request_timeout=300.0,
+                    thinking=settings.LLM_ENABLE_THINKING,
                 )
         return self._llm
 

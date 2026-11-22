@@ -239,3 +239,11 @@ override.tf.json
 
 # other
 plan.txt
+
+# Phase 8: Isolated CUDA Training Workspace
+training/.venv/
+training/data/*.jsonl
+training/data/*.parquet
+training/artifacts/*
+!training/artifacts/.gitkeep
+!training/data/.gitkeep

@@ -1,0 +1,43 @@
+[project]
+name = "enterprise-rag-training"
+version = "0.1.0"
+description = "Isolated CUDA post-training workspace for QLoRA SFT and DPO alignment of Qwen3-8B"
+requires-python = ">=3.12,<3.13"
+
+dependencies = [
+    "torch>=2.14",
+    "transformers>=5.0",
+    "peft>=0.15",
+    "trl>=1.0",
+    "bitsandbytes>=0.50",
+    "accelerate>=1.0",
+    "datasets>=3.0",
+    "huggingface-hub>=0.30",
+    "pyyaml>=6.0",
+    "scipy>=1.14",
+    "sentencepiece>=0.2",
+    "protobuf>=5.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.12",
+    "pytest>=8.4",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu132"
+url = "https://download.pytorch.org/whl/cu132"
+explicit = true
+
+[tool.uv]
+index-strategy = "unsafe-best-match"
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu132" }
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
