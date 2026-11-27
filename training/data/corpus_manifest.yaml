@@ -1,0 +1,50 @@
+documents:
+  nist_ai_600_1:
+    title: "NIST AI 600-1: Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile"
+    url: "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf"
+    filename: "NIST.AI.600-1.pdf"
+    license: "US Government Public Domain (17 U.S.C. § 105)"
+    split: "train"
+    keep_pages: [[5, 57]]
+    sha256: 6e73620ab6b64e90ef2c04bf0e0d6246185a2f4b1b13cab0df494496cff89b6a
+  nist_csf_2_0:
+    title: "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)"
+    url: "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf"
+    filename: "NIST.CSWP.29.pdf"
+    license: "US Government Public Domain (17 U.S.C. § 105)"
+    split: "train"
+    keep_pages: [[5, 31]]
+    sha256: 3c31f46fee98cac0c4323453e5109291a213b4de7fef8c058af9bf67f717433c
+  fed_mpr_2026_07:
+    title: "Board of Governors of the Federal Reserve System: Monetary Policy Report (July 2026)"
+    url: "https://www.federalreserve.gov/monetarypolicy/files/20260710_mprfullreport.pdf"
+    filename: "20260710_mprfullreport.pdf"
+    license: "US Government Public Domain (narrative/Fed tables only; exclude third-party S&P/ICE/JPM charts per p. ii; do not redistribute PDF)"
+    split: "train"
+    keep_pages: [[9, 54], [68, 70]]
+    sha256: d8109da697abd4c58a5f1fb074d4b5cbcd197df1baf9e1f6e7620e5812e14a37
+  dpo_paper_2024:
+    title: "Direct Preference Optimization: Your Language Model is Secretly a Reward Model (arXiv:2305.18290v3)"
+    url: "https://arxiv.org/pdf/2305.18290"
+    filename: "2305.18290v3.pdf"
+    license: "CC BY 4.0 (Rafailov et al., 2023/2024)"
+    split: "val"
+    keep_pages: [[1, 10], [15, 21]]
+    sha256: 92cb3a2b71362acda98a789b03d88688fd33cf5fcf13f81d2b1de30ee7d3b67a
+  fomc_minutes_2026_06:
+    title: "Minutes of the Federal Open Market Committee (June 16-17, 2026)"
+    url: "https://www.federalreserve.gov/monetarypolicy/files/fomcminutes20260617.pdf"
+    filename: "fomcminutes20260617.pdf"
+    license: "US Government Public Domain"
+    split: "test_stress"
+    keep_pages: [[2, 12]]
+    stop_marker: "Attendance"
+    sha256: e824cd0233a8dc220ffb38345a7fd4d5e8ae0639505a8e5b5591e4b5d8b513f6
+  attention_is_all_you_need:
+    title: "Attention Is All You Need (arXiv:1706.03762v7)"
+    local_path: "../../data/attention_is_all_you_need.pdf"
+    filename: "attention_is_all_you_need.pdf"
+    license: "arXiv non-exclusive license (held-out benchmark only)"
+    split: "test_held_out"
+    keep_pages: [[1, 10]]
+    sha256: bdfaa68d8984f0dc02beaca527b76f207d99b666d31d1da728ee0728182df697

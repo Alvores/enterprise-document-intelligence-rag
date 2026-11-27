@@ -1,0 +1,100 @@
+{
+  "generated": "2026-11-27T21:31:03.050434+00:00",
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "window_size": 3,
+  "num_distractors": 4,
+  "seed": 42,
+  "zero_doc_id_overlap": true,
+  "documents": {
+    "nist_ai_600_1": {
+      "split": "train",
+      "pages_kept": 53,
+      "raw_blocks": 962,
+      "noise_blocks_dropped": 488,
+      "windows": 635,
+      "median_words": 172.0,
+      "p95_words": 251.0
+    },
+    "nist_csf_2_0": {
+      "split": "train",
+      "pages_kept": 27,
+      "raw_blocks": 444,
+      "noise_blocks_dropped": 61,
+      "windows": 269,
+      "median_words": 152.0,
+      "p95_words": 599.9999999999991
+    },
+    "fed_mpr_2026_07": {
+      "split": "train",
+      "pages_kept": 49,
+      "raw_blocks": 1788,
+      "noise_blocks_dropped": 885,
+      "windows": 688,
+      "median_words": 161.0,
+      "p95_words": 259.0
+    },
+    "dpo_paper_2024": {
+      "split": "val",
+      "pages_kept": 17,
+      "raw_blocks": 607,
+      "noise_blocks_dropped": 430,
+      "windows": 329,
+      "median_words": 163.0,
+      "p95_words": 237.19999999999993
+    },
+    "fomc_minutes_2026_06": {
+      "split": "test_stress",
+      "pages_kept": 11,
+      "raw_blocks": 349,
+      "noise_blocks_dropped": 15,
+      "windows": 173,
+      "median_words": 177.0,
+      "p95_words": 222.60000000000002
+    },
+    "attention_is_all_you_need": {
+      "split": "test_held_out",
+      "pages_kept": 10,
+      "raw_blocks": 177,
+      "noise_blocks_dropped": 75,
+      "windows": 190,
+      "median_words": 149.5,
+      "p95_words": 205.0
+    }
+  },
+  "splits": {
+    "train": {
+      "documents": [
+        "fed_mpr_2026_07",
+        "nist_ai_600_1",
+        "nist_csf_2_0"
+      ],
+      "windows": 1592,
+      "median_words": 164.0,
+      "p95_words": 272.4499999999998
+    },
+    "val": {
+      "documents": [
+        "dpo_paper_2024"
+      ],
+      "windows": 329,
+      "median_words": 163.0,
+      "p95_words": 237.19999999999993
+    },
+    "test_stress": {
+      "documents": [
+        "fomc_minutes_2026_06"
+      ],
+      "windows": 173,
+      "median_words": 177.0,
+      "p95_words": 222.60000000000002
+    },
+    "test_held_out": {
+      "documents": [
+        "attention_is_all_you_need"
+      ],
+      "windows": 190,
+      "median_words": 149.5,
+      "p95_words": 205.0
+    }
+  }
+}
